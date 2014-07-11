@@ -10,7 +10,7 @@
     <projectUrl>https://github.com/Cybermaxs/Toppler</projectUrl>
     <licenseUrl>https://raw.githubusercontent.com/Cybermaxs/Toppler/master/LICENSE</licenseUrl>
     <description>Minimalist Libray to manage Leaderboards and Top(N) use cases</description>
-    <summary>A redis Ranking & Leaderboard Library</summary>
+    <summary>A redis Ranking and Leaderboard Library</summary>
     <!--<releaseNotes>v 1.0.0.0 - Initial Release</releaseNotes>-->
     <copyright>Copyright 2014</copyright>
     <tags>Redis Leaderboard TopN</tags>
