@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>Toppler</id>
+    <version>$version$</version>
+    <title>Toppler</title>
+    <authors>Cybermaxs</authors>
+    <owners>Cybermaxs</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Minimalist Libray to manage Leaderboards and Top(N) use cases</description>
+    <releaseNotes>v 1.0.0.0 - Initial Release</releaseNotes>
+    <copyright>Copyright 2014</copyright>
+    <tags>Redis Leaderboard TopN</tags>
+    <dependencies>
+      <dependency id="StackExchange.Redis" version="1.0.32" />
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="bin\Release\Toppler*.*" target="lib\net45" />
+  </files>
+</package>
