@@ -15,7 +15,7 @@
     <copyright>Copyright 2014</copyright>
     <tags>Redis Leaderboard TopN</tags>
     <dependencies>
-      <dependency id="StackExchange.Redis" version="1.0.32" />
+      <dependency id="StackExchange.Redis" version="1.0.322" />
     </dependencies>
   </metadata>
   <files>

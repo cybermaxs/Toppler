@@ -4,8 +4,9 @@
 a minimalist library to manage countings, rankings &amp; overall leaderboard
 
 ## Installing via NuGet
-Comming soon
-
+```
+Install-Package Toppler
+```
 
 ## Overview 
 TODO
