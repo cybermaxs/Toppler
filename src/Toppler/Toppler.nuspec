@@ -8,7 +8,7 @@
     <owners>Cybermaxs</owners>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <projectUrl>https://github.com/Cybermaxs/Toppler</projectUrl>
-    <licenseUrl>https://github.com/Cybermaxs/Toppler/blob/master/LICENSE</licenseUrl>
+    <licenseUrl>https://raw.githubusercontent.com/Cybermaxs/Toppler/master/LICENSE</licenseUrl>
     <description>Minimalist Libray to manage Leaderboards and Top(N) use cases</description>
     <!--<releaseNotes>v 1.0.0.0 - Initial Release</releaseNotes>-->
     <copyright>Copyright 2014</copyright>
