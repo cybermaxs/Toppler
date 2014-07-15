@@ -13,7 +13,7 @@
     <summary>A redis Ranking and Leaderboard Library</summary>
     <!--<releaseNotes>v 1.0.0.0 - Initial Release</releaseNotes>-->
     <copyright>Copyright 2014</copyright>
-    <tags>Redis Leaderboard TopN</tags>
+    <tags>Redis Leaderboard TopN Ranking Leaderboard</tags>
     <dependencies>
       <dependency id="StackExchange.Redis" version="1.0.322" />
     </dependencies>
