@@ -8,6 +8,12 @@ namespace Toppler.Tests.Unit.Api
     public class TopplerClientTest
     {
         [TestMethod]
+        public void TopplerClient_WhenNoSetup_ShouldNoBeConnected()
+        {
+            Assert.IsFalse(TopplerClient.IsConnected);
+        }
+
+        [TestMethod]
         [ExpectedException(typeof(InvalidOperationException))]
         public void Counter_WhenNoSetup_ShouldThrowException()
         {

@@ -10,6 +10,14 @@ namespace Toppler
         private static IConnectionProvider connectionProvider;
         private static ITopplerContext options;
 
+        /// <summary>
+        /// Return the state of the Redis Connection.
+        /// </summary>
+        public static bool IsConnected
+        {
+            get { return connectionProvider != null && connectionProvider.IsConnected; }
+        }
+
         public static void Setup(string redisConfiguration = "localhost:6379", int dbIndex = Constants.DefaultRedisDb, string @namespace = "toppler", Granularity[] granularities = null)
         {
             if (options == null && connectionProvider == null)

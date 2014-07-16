@@ -72,7 +72,7 @@
     <Compile Include="Redis\Scope\BatchScopeProvider.cs" />
     <Compile Include="Api\ScoredResult.cs" />
     <Compile Include="TopplerContext.cs" />
-    <Compile Include="TopplerApi.cs" />
+    <Compile Include="TopplerClient.cs" />
     <Compile Include="Api\TopResult.cs" />
   </ItemGroup>
   <ItemGroup>
