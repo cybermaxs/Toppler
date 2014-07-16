@@ -1,2 +1,2 @@
 SET NUGET=.nuget\nuget
-%NUGET% pack src\Toppler\Toppler.csproj -symbols -Prop Configuration=Release
+%NUGET% pack src\Toppler\Toppler.csproj -OutputDirectory dist -Build -Prop Configuration=Release
