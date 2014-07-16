@@ -10,5 +10,7 @@ namespace Toppler
        public const string DefaultNamespace = "toppler";
        public const string DefaultContext = "default";
        public const string SetAllContexts = "contexts";
+
+       public const string CacheKeyPart = "cache";
     }
 }

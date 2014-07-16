@@ -9,7 +9,8 @@ namespace Toppler.Api
     public interface ICounter
     {
         /// <summary>
-        /// Add Hits.
+        /// Add Hit(s).
+        /// This method should be called by clients when something just happened (page view, click, just played a game, ...)
         /// </summary>
         /// <param name="source">Source of the hit</param>
         /// <param name="occurred">Date of the Hit (Utc).Null means just now.</param>

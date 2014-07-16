@@ -44,7 +44,9 @@
   <ItemGroup>
     <Compile Include="Api\Admin.cs" />
     <Compile Include="Api\Counter.cs" />
-    <Compile Include="Api\IAdmin.cs" />
+    <Compile Include="Api\Interfaces\IAdmin.cs" />
+    <Compile Include="Extensions\IRankingExtensions.cs" />
+    <Compile Include="Api\RankingOptions.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="Core\DefaultGranularityProvider.cs" />
     <Compile Include="Core\DefaultKeyFactory.cs" />
@@ -57,9 +59,9 @@
     <Compile Include="Extensions\DateTimeExtensions.cs" />
     <Compile Include="Extensions\Int64Extensions.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
-    <Compile Include="Api\ICounter.cs" />
+    <Compile Include="Api\Interfaces\ICounter.cs" />
     <Compile Include="Core\IGranularity.cs" />
-    <Compile Include="Api\IRanking.cs" />
+    <Compile Include="Api\Interfaces\IRanking.cs" />
     <Compile Include="ITopplerContext.cs" />
     <Compile Include="Api\Ranking.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -68,10 +70,10 @@
     <Compile Include="Redis\Scope\IScopeProvider.cs" />
     <Compile Include="Redis\Scope\TransactionScopeProvider.cs" />
     <Compile Include="Redis\Scope\BatchScopeProvider.cs" />
-    <Compile Include="Results\ScoredResult.cs" />
+    <Compile Include="Api\ScoredResult.cs" />
     <Compile Include="TopplerContext.cs" />
     <Compile Include="TopplerApi.cs" />
-    <Compile Include="Results\TopResult.cs" />
+    <Compile Include="Api\TopResult.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

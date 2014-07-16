@@ -6,8 +6,6 @@ using System.Threading.Tasks;
 using Toppler.Core;
 using Toppler.Extensions;
 using Toppler.Redis;
-using Toppler.Redis.Scope;
-using Toppler.Results;
 
 namespace Toppler.Api
 {
@@ -28,44 +26,62 @@ namespace Toppler.Api
             this.context = context;
         }
 
-        public async Task<IEnumerable<TopResult>> GetTops(Granularity granularity, int resolution = 1, int topN = -1, DateTime? from = null, string dimension = Constants.DefaultContext)
+        public async Task<IEnumerable<TopResult>> GetTops(Granularity granularity, int resolution = 1, DateTime? from = null, string[] dimensions = null, RankingOptions options=null)
         {
             var db = this.connectionProvider.GetDatabase(this.context.DbIndex);
 
-            var allkeys = await this.GetKeys(db, granularity, resolution, from, new string[] { dimension });
-
-            var cacheKey = this.context.KeyFactory.NsKey(dimension, "cache", granularity.Name, resolution.ToString());
-
-            bool exists = await db.KeyExistsAsync(cacheKey);
-            if(!exists)
-            {
-                await db.SortedSetCombineAndStoreAsync(SetOperation.Union, cacheKey, allkeys);
-                db.KeyExpireAsync(cacheKey, DateTime.UtcNow.AddMinutes(1), CommandFlags.FireAndForget);
-            }
-
-            var entries = await db.SortedSetRangeByRankWithScoresAsync(cacheKey, 0, topN, Order.Descending);
-            return entries.Select(i =>
-            {
-                return new TopResult(i.Element.ToString(), i.Score);
-            });
-        }
-
-        public async Task<IEnumerable<TopResult>> GetOverallTops(Granularity granularity, int resolution = 1, int topN = -1, DateTime? from = null, string[] dimensions = null)
-        {
-            var db = this.connectionProvider.GetDatabase(this.context.DbIndex);
+            options = options ?? new RankingOptions();
 
             var allkeys = await this.GetKeys(db, granularity, resolution, from, dimensions);
 
-            var cacheKey = this.context.KeyFactory.NsKey(Constants.SetAllContexts, "cache", granularity.Name, resolution.ToString());
+            var cacheKey = this.context.KeyFactory.NsKey(dimensions!=null ? this.context.KeyFactory.RawKey(dimensions): Constants.SetAllContexts, Constants.CacheKeyPart, granularity.Name, resolution.ToString());
 
-            bool exists = await db.KeyExistsAsync(cacheKey);
-            if (!exists)
+            if(options.CacheDuration!= TimeSpan.Zero)
             {
-                await db.SortedSetCombineAndStoreAsync(SetOperation.Union, cacheKey, allkeys);
-                await db.KeyExpireAsync(cacheKey, TimeSpan.FromMinutes(1));
+                //use cache
+                bool exists = await db.KeyExistsAsync(cacheKey);
+                if (!exists)
+                {
+                    await db.SortedSetCombineAndStoreAsync(SetOperation.Union, cacheKey, allkeys);
+                    await db.KeyExpireAsync(cacheKey, DateTime.UtcNow.Add(options.CacheDuration), CommandFlags.FireAndForget);
+                }
             }
+            else
+                await db.SortedSetCombineAndStoreAsync(SetOperation.Union, cacheKey, allkeys);
+            
 
-            var entries = await db.SortedSetRangeByRankWithScoresAsync(cacheKey, 0, topN, Order.Descending);
+            var entries = await db.SortedSetRangeByRankWithScoresAsync(cacheKey, 0, options.TopN, Order.Descending);
+            return entries.Select(i =>
+            {
+                return new TopResult(i.Element.ToString(), i.Score);
+            });
+        }
+
+        public async Task<IEnumerable<TopResult>> GetOverallTops(Granularity granularity, int resolution = 1, DateTime? from = null, RankingOptions options=null)
+        {
+            var db = this.connectionProvider.GetDatabase(this.context.DbIndex);
+
+            options = options ?? new RankingOptions();
+
+            string[] dimensions = null;
+            var allkeys = await this.GetKeys(db, granularity, resolution, from, dimensions);
+
+            var cacheKey = this.context.KeyFactory.NsKey(Constants.SetAllContexts, Constants.CacheKeyPart, granularity.Name, resolution.ToString());
+
+            if (options.CacheDuration != TimeSpan.Zero)
+            {
+                //use cache
+                bool exists = await db.KeyExistsAsync(cacheKey);
+                if (!exists)
+                {
+                    await db.SortedSetCombineAndStoreAsync(SetOperation.Union, cacheKey, allkeys);
+                    await db.KeyExpireAsync(cacheKey, DateTime.UtcNow.Add(options.CacheDuration), CommandFlags.FireAndForget);
+                }
+            }
+            else
+                await db.SortedSetCombineAndStoreAsync(SetOperation.Union, cacheKey, allkeys);
+
+            var entries = await db.SortedSetRangeByRankWithScoresAsync(cacheKey, 0, options.TopN, Order.Descending);
             return entries.Select(i =>
             {
                 return new TopResult(i.Element.ToString(), i.Score);
@@ -73,11 +89,13 @@ namespace Toppler.Api
 
         }
 
-        public async Task<IEnumerable<ScoredResult>> GetScoredResults(Granularity granularity, int resolution = 1, IWeightFunction weightFunc = null, DateTime? from = null, string dimension = Constants.DefaultContext)
+        public async Task<IEnumerable<ScoredResult>> GetScoredResults(Granularity granularity, int resolution = 1, IWeightFunction weightFunc = null, DateTime? from = null, string dimension = Constants.DefaultContext, RankingOptions options = null)
         {
             var db = this.connectionProvider.GetDatabase(this.context.DbIndex);
 
             var allkeys = await this.GetKeys(db, granularity, resolution, from, new string[] { dimension });
+
+            options = options ?? new RankingOptions();
 
             var allweights = new List<double>();
             for(var k=0; k<allkeys.Length; k++)
@@ -85,16 +103,22 @@ namespace Toppler.Api
                 allweights.Add(weightFunc.Weight(k, allkeys.Count()));
             }
 
-            var cacheKey = this.context.KeyFactory.NsKey(dimension, "cache", weightFunc.Name, granularity.Name, resolution.ToString());
+            var cacheKey = this.context.KeyFactory.NsKey(dimension, Constants.CacheKeyPart, weightFunc.Name, granularity.Name, resolution.ToString());
 
-            bool exists = await db.KeyExistsAsync(cacheKey);
-            if (!exists)
+            if (options.CacheDuration != TimeSpan.Zero)
             {
-                await db.SortedSetCombineAndStoreAsync(SetOperation.Union, cacheKey, allkeys, allweights.ToArray());
-                db.KeyExpireAsync(cacheKey, DateTime.UtcNow.AddMinutes(1), CommandFlags.FireAndForget);
+                //use cache
+                bool exists = await db.KeyExistsAsync(cacheKey);
+                if (!exists)
+                {
+                    await db.SortedSetCombineAndStoreAsync(SetOperation.Union, cacheKey, allkeys, allweights.ToArray());
+                    await db.KeyExpireAsync(cacheKey, DateTime.UtcNow.Add(options.CacheDuration), CommandFlags.FireAndForget);
+                }
             }
+            else
+                await db.SortedSetCombineAndStoreAsync(SetOperation.Union, cacheKey, allkeys, allweights.ToArray());
 
-            var entries = await db.SortedSetRangeByRankWithScoresAsync(cacheKey, 0, -1, Order.Descending);
+            var entries = await db.SortedSetRangeByRankWithScoresAsync(cacheKey, 0, options.TopN, Order.Descending);
             return entries.Select(i =>
             {
                 return new ScoredResult(i.Element.ToString(), i.Score);

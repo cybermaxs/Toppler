@@ -5,6 +5,7 @@ using Toppler.Core;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using Toppler.Tests.Integration.TestHelpers;
+using Toppler.Extensions;
 
 namespace Toppler.Tests.Integration
 {

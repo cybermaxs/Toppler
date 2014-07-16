@@ -1,5 +1,5 @@
 ﻿
-namespace Toppler.Results
+namespace Toppler.Api
 {
     public class ScoredResult
     {

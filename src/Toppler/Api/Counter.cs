@@ -1,8 +1,6 @@
-﻿using StackExchange.Redis;
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
-using Toppler.Core;
 using Toppler.Extensions;
 using Toppler.Redis;
 using Toppler.Redis.Scope;
@@ -20,7 +18,7 @@ namespace Toppler.Api
             if (connectionProvider == null)
                 throw new ArgumentNullException("connectionProvider");
 
-            if(context == null)
+            if (context == null)
                 throw new ArgumentNullException("context");
 
             this.connectionProvider = connectionProvider;
@@ -28,7 +26,7 @@ namespace Toppler.Api
             this.transaction = new TransactionScopeProvider(this.connectionProvider);
         }
 
-        public Task<bool> HitAsync(string eventSource, DateTime? occurred=null, long hits=1, string dimension = Constants.DefaultContext)
+        public Task<bool> HitAsync(string eventSource, DateTime? occurred = null, long hits = 1, string dimension = Constants.DefaultContext)
         {
             if (string.IsNullOrEmpty(eventSource))
             {
@@ -36,7 +34,7 @@ namespace Toppler.Api
                 return Task.FromResult(false);
             }
 
-            if(occurred.HasValue && occurred.Value.Kind!= System.DateTimeKind.Utc)
+            if (occurred.HasValue && occurred.Value.Kind != System.DateTimeKind.Utc)
             {
                 Trace.TraceWarning("HitAsync Failed because occured data is not Utc.");
                 return Task.FromResult(false);
@@ -45,7 +43,7 @@ namespace Toppler.Api
             return this.transaction.Invoke(db =>
                    {
                        // tracks all contexts : used for mixed results
-                       db.SetAddAsync(this.context.KeyFactory.NsKey(Constants.SetAllContexts), dimension);
+                       db.SetAddAsync(this.context.KeyFactory.NsKey(Constants.SetAllContexts), dimension, StackExchange.Redis.CommandFlags.FireAndForget);
 
                        foreach (var granularity in this.context.GranularityProvider.GetGranularities())
                        {
