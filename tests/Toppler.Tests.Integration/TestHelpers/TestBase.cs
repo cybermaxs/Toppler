@@ -13,7 +13,9 @@ namespace Toppler.Tests.Integration.TestHelpers
         public TestBase()
         {
             this.TestEventSource = RandomEventSource();
+          
             this.TestDimension = RandomDimension();
+            this.TestDimension = "mydimension";
         }
 
         protected bool Reset()

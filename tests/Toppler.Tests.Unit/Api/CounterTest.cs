@@ -92,7 +92,7 @@ namespace Toppler.Tests.Unit.Api
 
             mockOfTransaction.Verify(b => b.ExecuteAsync(It.IsAny<CommandFlags>()), Times.Once);
             //set
-            mockOfTransaction.Verify(b => b.SetAddAsync("ping:"+Constants.SetAllContexts, "mycontext", It.IsAny<CommandFlags>()), Times.Once);
+            mockOfTransaction.Verify(b => b.SetAddAsync("ping:"+Constants.SetAllDimensions, "mycontext", It.IsAny<CommandFlags>()), Times.Once);
 
             mockOfTransaction.Verify(b => b.SortedSetIncrementAsync(It.IsAny<RedisKey>(), It.IsAny<RedisValue>(), It.IsAny<double>(), It.IsAny<CommandFlags>()), Times.Exactly(4));
             mockOfTransaction.Verify(b => b.SortedSetIncrementAsync("ping:mycontext:second:" + ts_hour + ":" + ts, "pong", 10D, It.IsAny<CommandFlags>()), Times.Once);

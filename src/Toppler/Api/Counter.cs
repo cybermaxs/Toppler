@@ -26,7 +26,7 @@ namespace Toppler.Api
             this.transaction = new TransactionScopeProvider(this.connectionProvider);
         }
 
-        public Task<bool> HitAsync(string eventSource, DateTime? occurred = null, long hits = 1, string dimension = Constants.DefaultContext)
+        public Task<bool> HitAsync(string eventSource, DateTime? occurred = null, long hits = 1, string dimension = Constants.DefaultDimension)
         {
             if (string.IsNullOrEmpty(eventSource))
             {
@@ -43,7 +43,7 @@ namespace Toppler.Api
             return this.transaction.Invoke(db =>
                    {
                        // tracks all contexts : used for mixed results
-                       db.SetAddAsync(this.context.KeyFactory.NsKey(Constants.SetAllContexts), dimension, StackExchange.Redis.CommandFlags.FireAndForget);
+                       db.SetAddAsync(this.context.KeyFactory.NsKey(Constants.SetAllDimensions), dimension, StackExchange.Redis.CommandFlags.FireAndForget);
 
                        foreach (var granularity in this.context.GranularityProvider.GetGranularities())
                        {

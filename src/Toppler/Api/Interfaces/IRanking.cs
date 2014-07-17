@@ -9,6 +9,6 @@ namespace Toppler.Api
     {
         Task<IEnumerable<TopResult>> GetTops(Granularity granularity, int resolution = 1, DateTime? from = null, string[] dimensions = null, RankingOptions options = null);
         Task<IEnumerable<TopResult>> GetOverallTops(Granularity granularity, int resolution = 1, DateTime? from = null, RankingOptions options = null);
-        Task<IEnumerable<ScoredResult>> GetScoredResults(Granularity granularity, int resolution = 1, IWeightFunction weightFunc = null, DateTime? from = null, string dimensions = Constants.DefaultContext, RankingOptions options = null);
+        Task<IEnumerable<ScoredResult>> GetScoredResults(Granularity granularity, int resolution = 1, IWeightFunction weightFunc = null, DateTime? from = null, string dimensions = Constants.DefaultDimension, RankingOptions options = null);
     }
 }

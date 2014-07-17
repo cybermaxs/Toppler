@@ -32,7 +32,7 @@ namespace Toppler.Api
             var db = this.connectionProvider.GetDatabase(this.context.DbIndex);
             if (dimensions == null)
             {
-                var values = await db.SetMembersAsync(this.context.KeyFactory.NsKey(Constants.SetAllContexts));
+                var values = await db.SetMembersAsync(this.context.KeyFactory.NsKey(Constants.SetAllDimensions));
                 dimensions = values.Select(s => s.ToString()).ToArray();
             }
 
@@ -54,7 +54,7 @@ namespace Toppler.Api
             }
 
             foreach (var dimension in dimensions)
-                await db.SetRemoveAsync(this.context.KeyFactory.NsKey(Constants.SetAllContexts), dimension);
+                await db.SetRemoveAsync(this.context.KeyFactory.NsKey(Constants.SetAllDimensions), dimension);
         }
     }
 }

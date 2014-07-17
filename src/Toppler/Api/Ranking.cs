@@ -34,7 +34,7 @@ namespace Toppler.Api
 
             var allkeys = await this.GetKeys(db, granularity, resolution, from, dimensions);
 
-            var cacheKey = this.context.KeyFactory.NsKey(dimensions!=null ? this.context.KeyFactory.RawKey(dimensions): Constants.SetAllContexts, Constants.CacheKeyPart, granularity.Name, resolution.ToString());
+            var cacheKey = this.context.KeyFactory.NsKey(dimensions!=null ? this.context.KeyFactory.RawKey(dimensions): Constants.SetAllDimensions, Constants.CacheKeyPart, granularity.Name, resolution.ToString());
 
             if(options.CacheDuration!= TimeSpan.Zero)
             {
@@ -66,7 +66,7 @@ namespace Toppler.Api
             string[] dimensions = null;
             var allkeys = await this.GetKeys(db, granularity, resolution, from, dimensions);
 
-            var cacheKey = this.context.KeyFactory.NsKey(Constants.SetAllContexts, Constants.CacheKeyPart, granularity.Name, resolution.ToString());
+            var cacheKey = this.context.KeyFactory.NsKey(Constants.SetAllDimensions, Constants.CacheKeyPart, granularity.Name, resolution.ToString());
 
             if (options.CacheDuration != TimeSpan.Zero)
             {
@@ -89,7 +89,7 @@ namespace Toppler.Api
 
         }
 
-        public async Task<IEnumerable<ScoredResult>> GetScoredResults(Granularity granularity, int resolution = 1, IWeightFunction weightFunc = null, DateTime? from = null, string dimension = Constants.DefaultContext, RankingOptions options = null)
+        public async Task<IEnumerable<ScoredResult>> GetScoredResults(Granularity granularity, int resolution = 1, IWeightFunction weightFunc = null, DateTime? from = null, string dimension = Constants.DefaultDimension, RankingOptions options = null)
         {
             var db = this.connectionProvider.GetDatabase(this.context.DbIndex);
 
@@ -130,7 +130,7 @@ namespace Toppler.Api
         {
             if (dimensions == null)
             {
-                var values = await db.SetMembersAsync(this.context.KeyFactory.NsKey(Constants.SetAllContexts));
+                var values = await db.SetMembersAsync(this.context.KeyFactory.NsKey(Constants.SetAllDimensions));
                 dimensions = values.Select(s => s.ToString()).ToArray();
             }
 
