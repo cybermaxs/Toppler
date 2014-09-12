@@ -17,6 +17,7 @@ TODO
 1. Counting stuff
 2. Leaderboards & Rankings with Custom Time Ranges (Second, Minute, Hour, Day)
 3. Very Basic Recommendation system (mixing random & topN values)
+4. Rate limiter with a sliding time range
 
 
 # Show me the code !
