@@ -1,4 +1,6 @@
-﻿using System;
+﻿using StackExchange.Redis;
+using System;
+using System.Linq;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using Toppler.Extensions;
@@ -28,9 +30,21 @@ namespace Toppler.Api
 
         public Task<bool> HitAsync(string eventSource, DateTime? occurred = null, long hits = 1, string dimension = Constants.DefaultDimension)
         {
-            if (string.IsNullOrEmpty(eventSource))
+            return HitAsync(new string[] {eventSource}, occurred, hits, dimension);
+        }
+
+
+        public Task<bool> HitAsync(string[] eventSources, DateTime? occurred = null, long hits = 1, string dimension = Constants.DefaultDimension)
+        {
+            if (eventSources==null)
             {
-                Trace.TraceWarning("HitAsync Failed because eventsource is empty.");
+                Trace.TraceWarning("HitAsync Failed because eventSources is null.");
+                return Task.FromResult(false);
+            }
+
+            if (eventSources.Any(s=>string.IsNullOrEmpty(s)))
+            {
+                Trace.TraceWarning("HitAsync Failed because one eventsource is null or empty.");
                 return Task.FromResult(false);
             }
 
@@ -41,25 +55,28 @@ namespace Toppler.Api
             }
 
             return this.transaction.Invoke(db =>
-                   {
-                       // tracks all contexts : used for mixed results
-                       db.SetAddAsync(this.context.KeyFactory.NsKey(Constants.SetAllDimensions), dimension, StackExchange.Redis.CommandFlags.FireAndForget);
+            {
+                // tracks all contexts : used for mixed results
+                db.SetAddAsync(this.context.KeyFactory.NsKey(Constants.SetAllDimensions), dimension, CommandFlags.FireAndForget);
 
-                       foreach (var granularity in this.context.GranularityProvider.GetGranularities())
-                       {
-                           var dt = occurred ?? DateTime.UtcNow;
-                           var tsround = dt.ToRoundedTimestamp(granularity.Size * granularity.Factor);
-                           var ts = dt.ToRoundedTimestamp(granularity.Factor);
+                foreach (var granularity in this.context.GranularityProvider.GetGranularities())
+                {
+                    var dt = occurred ?? DateTime.UtcNow;
+                    var tsround = dt.ToRoundedTimestamp(granularity.Size * granularity.Factor);
+                    var ts = dt.ToRoundedTimestamp(granularity.Factor);
 
-                           var key = this.context.KeyFactory.NsKey(dimension, granularity.Name, tsround.ToString(), ts.ToString());
+                    var key = this.context.KeyFactory.NsKey(dimension, granularity.Name, tsround.ToString(), ts.ToString());
 
-                           // increment sorted set
-                           db.SortedSetIncrementAsync(key, eventSource, hits);
+                    foreach (var eventSource in eventSources)
+                    {
+                        // increment sorted set
+                        db.SortedSetIncrementAsync(key, eventSource, hits);
+                    }
 
-                           // keys expiration (if occured date is not too far)
-                           db.KeyExpireAsync(key, (ts + granularity.Ttl).ToDateTime());
-                       }
-                   }, this.context.DbIndex);
+                    // keys expiration (if occured date is not too far)
+                    db.KeyExpireAsync(key, (ts + granularity.Ttl).ToDateTime());
+                }
+            }, this.context.DbIndex);
         }
     }
 }

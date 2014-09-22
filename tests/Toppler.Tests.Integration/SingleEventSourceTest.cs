@@ -1,10 +1,9 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
-using System.Diagnostics;
 using System.Linq;
 using Toppler.Core;
-using Toppler.Tests.Integration.TestHelpers;
 using Toppler.Extensions;
+using Toppler.Tests.Integration.TestHelpers;
 
 namespace Toppler.Tests.Integration
 {
