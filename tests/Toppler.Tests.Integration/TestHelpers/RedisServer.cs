@@ -18,7 +18,7 @@ namespace Toppler.Tests.Integration.TestHelpers
         public static bool Start()
         {
             if (!IsRunning)
-                return Process.Start(@"..\..\..\..\packages\Redis-64.2.8.9\redis-server.exe") != null;
+                return Process.Start(@"..\..\..\..\packages\Redis-64.2.8.12\redis-server.exe") != null;
             return false;
         }
 
@@ -47,7 +47,7 @@ namespace Toppler.Tests.Integration.TestHelpers
         public static Process StartNewMonitor()
         {
             ProcessStartInfo info = new ProcessStartInfo();
-            info.FileName = @"..\..\..\..\packages\Redis-64.2.8.9\redis-cli.exe";
+            info.FileName = @"..\..\..\..\packages\Redis-64.2.8.12\redis-cli.exe";
             info.Arguments = "MONITOR";
             info.CreateNoWindow = true;
             info.UseShellExecute = false;
