@@ -21,7 +21,7 @@ namespace Toppler.Tests.Unit.Api
         [ExpectedException(typeof(ArgumentNullException))]
         public void Ctor_WhenNullContext_ShouldThrowException()
         {
-            Mock<IConnectionProvider> provider = new Mock<IConnectionProvider>();
+            Mock<IRedisConnection> provider = new Mock<IRedisConnection>();
             var api = new Ranking(provider.Object, null);
         }
     }

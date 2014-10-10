@@ -12,15 +12,7 @@ namespace Toppler.Tests.Unit.Core
         public void DefaultGranularityProvider_WhenCtor_ShouldReturn4Granularities()
         {
             var provider = new DefaultGranularityProvider();
-            Assert.AreEqual(0, provider.GetGranularities().Count());
-        }
-
-        [TestMethod]
-        public void DefaultGranularityProvider_WhenCtorWithGrans_ShouldAddGranularities()
-        {
-            var provider = new DefaultGranularityProvider(Granularity.Second);
-            Assert.AreEqual(1, provider.GetGranularities().Count());
-            Assert.IsTrue(provider.GetGranularities().Contains(Granularity.Second));
+            Assert.AreEqual(4, provider.GetGranularities().Count());
         }
 
 

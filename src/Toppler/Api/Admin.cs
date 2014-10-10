@@ -3,33 +3,31 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Toppler.Core;
 using Toppler.Extensions;
 using Toppler.Redis;
-using Toppler.Redis.Scope;
 
 namespace Toppler.Api
 {
     public class Admin : IAdmin
     {
-        private readonly IConnectionProvider connectionProvider;
+        private readonly IRedisConnection redisConnection;
         private readonly ITopplerContext context;
 
-        internal Admin(IConnectionProvider connectionProvider, ITopplerContext context)
+        internal Admin(IRedisConnection redisConnection, ITopplerContext context)
         {
-            if (connectionProvider == null)
+            if (redisConnection == null)
                 throw new ArgumentNullException("connectionProvider");
 
             if (context == null)
                 throw new ArgumentNullException("context");
 
-            this.connectionProvider = connectionProvider;
+            this.redisConnection = redisConnection;
             this.context = context;
         }
 
         public async Task FlushDimensions(string[] dimensions = null)
         {
-            var db = this.connectionProvider.GetDatabase(this.context.DbIndex);
+            var db = this.redisConnection.GetDatabase(this.context.DbIndex);
             if (dimensions == null)
             {
                 var values = await db.SetMembersAsync(this.context.KeyFactory.NsKey(Constants.SetAllDimensions));
@@ -38,7 +36,7 @@ namespace Toppler.Api
 
             var now = DateTime.UtcNow;
             //generate all keys to be deleted by 
-            foreach (var granularity in this.context.GranularityProvider.GetGranularities())
+            foreach (var granularity in this.context.Granularities)
             {
                 var toInSeconds = now.ToRoundedTimestamp(granularity.Factor);
                 var fromInSeconds = granularity.GetMinSecondsTimestamp(now).ToRoundedTimestamp(granularity.Factor * granularity.Size);

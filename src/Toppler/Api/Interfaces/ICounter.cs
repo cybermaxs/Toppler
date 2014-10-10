@@ -29,6 +29,5 @@ namespace Toppler.Api
         /// <param name="dimension">context of the hit (default : 1)</param>
         /// <returns>A task indicating success or failure.</returns>
         Task<bool> HitAsync(string[] eventSources, DateTime? occurred = null, long hits = 1, string dimension = Constants.DefaultDimension);
-
     }
 }

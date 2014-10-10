@@ -21,7 +21,7 @@ namespace Toppler.Tests.Unit.Redis
             Mock<IDatabase> mockOfDatabase = new Mock<IDatabase>();
             mockOfDatabase.Setup(m => m.CreateBatch(It.IsAny<object>())).Returns(mockOfBatch.Object);
 
-            Mock<IConnectionProvider> mockOfConnectionProvider = new Mock<IConnectionProvider>();
+            Mock<IRedisConnection> mockOfConnectionProvider = new Mock<IRedisConnection>();
             mockOfConnectionProvider.Setup(p => p.GetDatabase(It.IsAny<int>())).Returns(mockOfDatabase.Object);
 
 
@@ -45,7 +45,7 @@ namespace Toppler.Tests.Unit.Redis
             Mock<IDatabase> mockOfDatabase = new Mock<IDatabase>();
             mockOfDatabase.Setup(m => m.CreateBatch(It.IsAny<object>())).Returns(mockOfBatch.Object);
 
-            Mock<IConnectionProvider> mockOfConnectionProvider = new Mock<IConnectionProvider>();
+            Mock<IRedisConnection> mockOfConnectionProvider = new Mock<IRedisConnection>();
             mockOfConnectionProvider.Setup(p => p.GetDatabase(It.IsAny<int>())).Throws<Exception>();
 
 
@@ -69,7 +69,7 @@ namespace Toppler.Tests.Unit.Redis
             Mock<IDatabase> mockOfDatabase = new Mock<IDatabase>();
             mockOfDatabase.Setup(m => m.CreateBatch(It.IsAny<object>())).Returns(mockOfBatch.Object);
 
-            Mock<IConnectionProvider> mockOfConnectionProvider = new Mock<IConnectionProvider>();
+            Mock<IRedisConnection> mockOfConnectionProvider = new Mock<IRedisConnection>();
             mockOfConnectionProvider.Setup(p => p.GetDatabase(It.IsAny<int>())).Returns(mockOfDatabase.Object);
 
 
@@ -96,7 +96,7 @@ namespace Toppler.Tests.Unit.Redis
             Mock<IDatabase> mockOfDatabase = new Mock<IDatabase>();
             mockOfDatabase.Setup(m => m.CreateTransaction(It.IsAny<object>())).Returns(mockOfTransaction.Object);
 
-            Mock<IConnectionProvider> mockOfConnectionProvider = new Mock<IConnectionProvider>();
+            Mock<IRedisConnection> mockOfConnectionProvider = new Mock<IRedisConnection>();
             mockOfConnectionProvider.Setup(p => p.GetDatabase(It.IsAny<int>())).Returns(mockOfDatabase.Object);
 
 
@@ -121,7 +121,7 @@ namespace Toppler.Tests.Unit.Redis
             Mock<IDatabase> mockOfDatabase = new Mock<IDatabase>();
             mockOfDatabase.Setup(m => m.CreateTransaction(It.IsAny<object>())).Returns(mockOfTransaction.Object);
 
-            Mock<IConnectionProvider> mockOfConnectionProvider = new Mock<IConnectionProvider>();
+            Mock<IRedisConnection> mockOfConnectionProvider = new Mock<IRedisConnection>();
             mockOfConnectionProvider.Setup(p => p.GetDatabase(It.IsAny<int>())).Throws<Exception>();
 
             TransactionScopeProvider provider = new TransactionScopeProvider(mockOfConnectionProvider.Object);
@@ -145,7 +145,7 @@ namespace Toppler.Tests.Unit.Redis
             Mock<IDatabase> mockOfDatabase = new Mock<IDatabase>();
             mockOfDatabase.Setup(m => m.CreateTransaction(It.IsAny<object>())).Returns(mockOfTransaction.Object);
 
-            Mock<IConnectionProvider> mockOfConnectionProvider = new Mock<IConnectionProvider>();
+            Mock<IRedisConnection> mockOfConnectionProvider = new Mock<IRedisConnection>();
             mockOfConnectionProvider.Setup(p => p.GetDatabase(It.IsAny<int>())).Returns(mockOfDatabase.Object);
 
             TransactionScopeProvider provider = new TransactionScopeProvider(mockOfConnectionProvider.Object);
@@ -169,7 +169,7 @@ namespace Toppler.Tests.Unit.Redis
             Mock<IDatabase> mockOfDatabase = new Mock<IDatabase>();
             mockOfDatabase.Setup(m => m.CreateTransaction(It.IsAny<object>())).Returns(mockOfTransaction.Object);
 
-            Mock<IConnectionProvider> mockOfConnectionProvider = new Mock<IConnectionProvider>();
+            Mock<IRedisConnection> mockOfConnectionProvider = new Mock<IRedisConnection>();
             mockOfConnectionProvider.Setup(p => p.GetDatabase(It.IsAny<int>())).Returns(mockOfDatabase.Object);
 
             TransactionScopeProvider provider = new TransactionScopeProvider(mockOfConnectionProvider.Object);

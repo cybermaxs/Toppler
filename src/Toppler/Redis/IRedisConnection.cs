@@ -2,7 +2,7 @@
 
 namespace Toppler.Redis
 {
-    public interface IConnectionProvider
+    public interface IRedisConnection
     {
         bool IsConnected { get; }
         IDatabase GetDatabase(int db = 0);

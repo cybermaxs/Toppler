@@ -8,21 +8,18 @@ namespace Toppler.Core
     {
         private List<Granularity> Granularities { get; set; }
 
-        public DefaultGranularityProvider(params Granularity[] granularities)
+        public DefaultGranularityProvider()
         {
             this.Granularities = new List<Granularity>();
-            if (granularities != null)
-            {
-                foreach (var gran in granularities)
-                {
-                    this.RegisterGranularity(gran);
-                }
-            }
+            this.Granularities.Add(Granularity.Second);
+            this.Granularities.Add(Granularity.Minute);
+            this.Granularities.Add(Granularity.Hour);
+            this.Granularities.Add(Granularity.Day);
         }
 
-        public IEnumerable<Granularity> GetGranularities()
+        public Granularity[] GetGranularities()
         {
-            return Granularities;
+            return Granularities.ToArray();
         }
 
 

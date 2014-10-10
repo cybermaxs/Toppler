@@ -45,7 +45,6 @@
     <Compile Include="Api\Admin.cs" />
     <Compile Include="Api\Counter.cs" />
     <Compile Include="Api\Interfaces\IAdmin.cs" />
-    <Compile Include="Extensions\IRankingExtensions.cs" />
     <Compile Include="Api\RankingOptions.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="Core\DefaultGranularityProvider.cs" />
@@ -65,14 +64,14 @@
     <Compile Include="ITopplerContext.cs" />
     <Compile Include="Api\Ranking.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Redis\IConnectionProvider.cs" />
-    <Compile Include="Redis\DefaultConnectionProvider.cs" />
+    <Compile Include="Redis\IRedisConnection.cs" />
+    <Compile Include="Redis\StackExchangeRedisConnection.cs" />
     <Compile Include="Redis\Scope\IScopeProvider.cs" />
     <Compile Include="Redis\Scope\TransactionScopeProvider.cs" />
     <Compile Include="Redis\Scope\BatchScopeProvider.cs" />
     <Compile Include="Api\ScoredResult.cs" />
     <Compile Include="TopplerContext.cs" />
-    <Compile Include="TopplerClient.cs" />
+    <Compile Include="Topp.cs" />
     <Compile Include="Api\TopResult.cs" />
   </ItemGroup>
   <ItemGroup>

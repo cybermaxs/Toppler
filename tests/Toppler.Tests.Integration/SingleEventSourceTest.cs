@@ -30,10 +30,10 @@ namespace Toppler.Tests.Integration
         [TestCategory("Integration")]
         public void SingleEventSource_SingleHit_NoContext()
         {
-            TopplerClient.Counter.HitAsync(this.TestEventSource);
+            Topp.Counter.HitAsync(this.TestEventSource);
 
-            var overall = TopplerClient.Ranking.GetOverallTops(Granularity.Day).Result;
-            var dimensioned = TopplerClient.Ranking.GetTops(Granularity.Day).Result;
+            var overall = Topp.Ranking.GetOverallTops(Granularity.Day).Result;
+            var dimensioned = Topp.Ranking.GetTops(Granularity.Day, dimension: Constants.DefaultDimension).Result;
 
             Assert.IsNotNull(overall);
             Assert.IsNotNull(dimensioned);
@@ -53,10 +53,10 @@ namespace Toppler.Tests.Integration
         [TestCategory("Integration")]
         public void SingleEventSource_SingleHit_RandomContext()
         {
-            TopplerClient.Counter.HitAsync(this.TestEventSource, dimension: this.TestDimension);
+            Topp.Counter.HitAsync(this.TestEventSource, dimension: this.TestDimension);
 
-            var overall = TopplerClient.Ranking.GetOverallTops(Granularity.Day).Result;
-            var dimensioned = TopplerClient.Ranking.GetTops(Granularity.Day, dimension: this.TestDimension).Result;
+            var overall = Topp.Ranking.GetOverallTops(Granularity.Day).Result;
+            var dimensioned = Topp.Ranking.GetTops(Granularity.Day, dimension: this.TestDimension).Result;
 
             Assert.IsNotNull(overall);
             Assert.IsNotNull(dimensioned);
@@ -79,11 +79,11 @@ namespace Toppler.Tests.Integration
             var now = DateTime.UtcNow.AddMinutes(-60);
             foreach (var item in Enumerable.Range(1, 60))
             {
-                TopplerClient.Counter.HitAsync(this.TestEventSource, now.AddMinutes(item), 1);
+                Topp.Counter.HitAsync(this.TestEventSource, now.AddMinutes(item), 1);
             }
 
-            var overall = TopplerClient.Ranking.GetOverallTops(Granularity.Day, 60).Result;
-            var dimensioned = TopplerClient.Ranking.GetTops(Granularity.Day, 60).Result;
+            var overall = Topp.Ranking.GetOverallTops(Granularity.Day, 60).Result;
+            var dimensioned = Topp.Ranking.GetTops(Granularity.Day, 60, dimension: Constants.DefaultDimension).Result;
 
             Assert.IsNotNull(overall);
             Assert.IsNotNull(dimensioned);
@@ -106,11 +106,11 @@ namespace Toppler.Tests.Integration
             var now = DateTime.UtcNow.AddMinutes(-60);
             foreach (var item in Enumerable.Range(1, 60))
             {
-                TopplerClient.Counter.HitAsync(this.TestEventSource, now.AddMinutes(item), 1, dimension: this.TestDimension);
+                Topp.Counter.HitAsync(this.TestEventSource, now.AddMinutes(item), 1, dimension: this.TestDimension);
             }
 
-            var overall = TopplerClient.Ranking.GetOverallTops(Granularity.Day, 60).Result;
-            var dimensioned = TopplerClient.Ranking.GetTops(Granularity.Day, 60, dimension: this.TestDimension).Result;
+            var overall = Topp.Ranking.GetOverallTops(Granularity.Day, 60).Result;
+            var dimensioned = Topp.Ranking.GetTops(Granularity.Day, 60, dimension: this.TestDimension).Result;
 
             Assert.IsNotNull(overall);
             Assert.IsNotNull(dimensioned);
@@ -136,34 +136,34 @@ namespace Toppler.Tests.Integration
 
             foreach (var i in Enumerable.Range(1, 3600))
             {
-                TopplerClient.Counter.HitAsync(this.TestEventSource, current, 1, this.TestDimension + "-v1");
-                TopplerClient.Counter.HitAsync(this.TestEventSource, current, 1, this.TestDimension + "-v2");
-                TopplerClient.Counter.HitAsync(this.TestEventSource, current, 1, this.TestDimension + "-v3");
+                Topp.Counter.HitAsync(this.TestEventSource, current, 1, this.TestDimension + "-v1");
+                Topp.Counter.HitAsync(this.TestEventSource, current, 1, this.TestDimension + "-v2");
+                Topp.Counter.HitAsync(this.TestEventSource, current, 1, this.TestDimension + "-v3");
                 current = current.AddSeconds(1);
             }
 
 
             //all contexts
-            var alltops = TopplerClient.Ranking.GetOverallTops(Granularity.Day, 1,  current).Result;
+            var alltops = Topp.Ranking.GetOverallTops(Granularity.Day, 1,  current).Result;
             Assert.AreEqual(this.TestEventSource, alltops.First().EventSource);
             Assert.AreEqual(1, alltops.Count());
             foreach (var r in alltops)
                 Assert.AreEqual(3600 * 3, r.Hits);
 
             //v1
-            var topsv1 = TopplerClient.Ranking.GetTops(Granularity.Day, 1,  current, this.TestDimension + "-v1").Result;
+            var topsv1 = Topp.Ranking.GetTops(Granularity.Day, 1,  current, this.TestDimension + "-v1").Result;
             Assert.AreEqual(this.TestEventSource, topsv1.First().EventSource);
             Assert.AreEqual(1, topsv1.Count());
             Assert.AreEqual(3600, topsv1.First().Hits);
 
             //v2
-            var topsv2 = TopplerClient.Ranking.GetTops(Granularity.Day, 1,  current, this.TestDimension + "-v2").Result;
+            var topsv2 = Topp.Ranking.GetTops(Granularity.Day, 1,  current, this.TestDimension + "-v2").Result;
             Assert.AreEqual(this.TestEventSource, topsv2.First().EventSource);
             Assert.AreEqual(1, topsv2.Count());
             Assert.AreEqual(3600, topsv2.First().Hits);
 
             //v3
-            var topsv3 = TopplerClient.Ranking.GetTops(Granularity.Day, 1,  current, this.TestDimension + "-v3").Result;
+            var topsv3 = Topp.Ranking.GetTops(Granularity.Day, 1,  current, this.TestDimension + "-v3").Result;
             Assert.AreEqual(this.TestEventSource, topsv3.First().EventSource);
             Assert.AreEqual(1, topsv3.Count());
             Assert.AreEqual(3600, topsv3.First().Hits);

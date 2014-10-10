@@ -6,6 +6,5 @@ namespace Toppler.Core
     {
         string Name { get; }
         Func<int, int, double> Weight { get; }
-
     }
 }

@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.30501.0
+VisualStudioVersion = 12.0.30723.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{9945A941-F557-4B2C-9E6D-4E3F921EA70E}"
 EndProject
@@ -18,6 +18,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{BF6464
 		.nuget\NuGet.exe = .nuget\NuGet.exe
 		.nuget\packages.config = .nuget\packages.config
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Toppler.Sample.RateLimiter", "samples\Toppler.Sample.RateLimiter\Toppler.Sample.RateLimiter.csproj", "{D281F404-B2B7-408A-977A-1A01AA7C37F4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -37,6 +39,10 @@ Global
 		{0AAFA1AE-A0EF-4E6E-8536-7AD85A15DB2A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0AAFA1AE-A0EF-4E6E-8536-7AD85A15DB2A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0AAFA1AE-A0EF-4E6E-8536-7AD85A15DB2A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D281F404-B2B7-408A-977A-1A01AA7C37F4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D281F404-B2B7-408A-977A-1A01AA7C37F4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D281F404-B2B7-408A-977A-1A01AA7C37F4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D281F404-B2B7-408A-977A-1A01AA7C37F4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -44,5 +50,6 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{EC27CD1C-2CCE-4B5C-88FF-39C4F0B6A188} = {9945A941-F557-4B2C-9E6D-4E3F921EA70E}
 		{0AAFA1AE-A0EF-4E6E-8536-7AD85A15DB2A} = {9945A941-F557-4B2C-9E6D-4E3F921EA70E}
+		{D281F404-B2B7-408A-977A-1A01AA7C37F4} = {7B78B802-7D2B-487A-8AB3-C70C969C3D11}
 	EndGlobalSection
 EndGlobal

@@ -24,14 +24,14 @@ namespace Toppler.Tests.Unit.Api
         [ExpectedException(typeof(ArgumentNullException))]
         public void Ctor_WhenNullContext_ShouldThrowException()
         {
-            Mock<IConnectionProvider> provider = new Mock<IConnectionProvider>();
+            Mock<IRedisConnection> provider = new Mock<IRedisConnection>();
             var api = new Counter(provider.Object, null);
         }
 
         [TestMethod]
         public void HitAsync_WhenEmptySource_ShouldFailed()
         {
-            Mock<IConnectionProvider> provider = new Mock<IConnectionProvider>();
+            Mock<IRedisConnection> provider = new Mock<IRedisConnection>();
             ITopplerContext context = new TopplerContext(Constants.DefaultNamespace, Constants.DefaultRedisDb, null);
             var api = new Counter(provider.Object, context);
 
@@ -44,7 +44,7 @@ namespace Toppler.Tests.Unit.Api
         [TestMethod]
         public void HitAsync_WhenNotUtc_ShouldFailed()
         {
-            Mock<IConnectionProvider> provider = new Mock<IConnectionProvider>();
+            Mock<IRedisConnection> provider = new Mock<IRedisConnection>();
             ITopplerContext context = new TopplerContext(Constants.DefaultNamespace, Constants.DefaultRedisDb, null);
             var api = new Counter(provider.Object, context);
 
@@ -68,7 +68,7 @@ namespace Toppler.Tests.Unit.Api
             Mock<IDatabase> mockOfDatabase = new Mock<IDatabase>();
             mockOfDatabase.Setup(m => m.CreateTransaction(It.IsAny<object>())).Returns(mockOfTransaction.Object);
 
-            Mock<IConnectionProvider> mockOfConnectionProvider = new Mock<IConnectionProvider>();
+            Mock<IRedisConnection> mockOfConnectionProvider = new Mock<IRedisConnection>();
             mockOfConnectionProvider.Setup(p => p.GetDatabase(It.IsAny<int>())).Returns(mockOfDatabase.Object);
 
             //namespace is set to "ping"

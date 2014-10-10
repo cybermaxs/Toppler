@@ -11,10 +11,10 @@ namespace Toppler.Api
 {
     public class Ranking : IRanking
     {
-        private readonly IConnectionProvider connectionProvider;
+        private readonly IRedisConnection connectionProvider;
         private readonly ITopplerContext context;
 
-        internal Ranking(IConnectionProvider connectionProvider, ITopplerContext context)
+        internal Ranking(IRedisConnection connectionProvider, ITopplerContext context)
         {
             if (connectionProvider == null)
                 throw new ArgumentNullException("connectionProvider");
@@ -87,6 +87,11 @@ namespace Toppler.Api
                 return new TopResult(i.Element.ToString(), i.Score);
             });
 
+        }
+
+        public Task<IEnumerable<TopResult>> GetTops(Granularity granularity, int resolution = 1, DateTime? from = null, string dimension = Constants.DefaultDimension, RankingOptions options = null)
+        {
+            return GetTops(granularity, resolution, from, new string[] { dimension }, options);
         }
 
         public async Task<IEnumerable<ScoredResult>> GetScoredResults(Granularity granularity, int resolution = 1, IWeightFunction weightFunc = null, DateTime? from = null, string dimension = Constants.DefaultDimension, RankingOptions options = null)

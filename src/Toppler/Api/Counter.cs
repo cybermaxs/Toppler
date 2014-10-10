@@ -11,28 +11,27 @@ namespace Toppler.Api
 {
     public class Counter : ICounter
     {
-        private readonly IConnectionProvider connectionProvider;
+        private readonly IRedisConnection redisConnection;
         private readonly ITopplerContext context;
         private readonly IScopeProvider transaction;
 
-        internal Counter(IConnectionProvider connectionProvider, ITopplerContext context)
+        internal Counter(IRedisConnection redisConnection, ITopplerContext context)
         {
-            if (connectionProvider == null)
+            if (redisConnection == null)
                 throw new ArgumentNullException("connectionProvider");
 
             if (context == null)
                 throw new ArgumentNullException("context");
 
-            this.connectionProvider = connectionProvider;
+            this.redisConnection = redisConnection;
             this.context = context;
-            this.transaction = new TransactionScopeProvider(this.connectionProvider);
+            this.transaction = new TransactionScopeProvider(this.redisConnection);
         }
 
         public Task<bool> HitAsync(string eventSource, DateTime? occurred = null, long hits = 1, string dimension = Constants.DefaultDimension)
         {
             return HitAsync(new string[] {eventSource}, occurred, hits, dimension);
         }
-
 
         public Task<bool> HitAsync(string[] eventSources, DateTime? occurred = null, long hits = 1, string dimension = Constants.DefaultDimension)
         {
@@ -59,7 +58,7 @@ namespace Toppler.Api
                 // tracks all contexts : used for mixed results
                 db.SetAddAsync(this.context.KeyFactory.NsKey(Constants.SetAllDimensions), dimension, CommandFlags.FireAndForget);
 
-                foreach (var granularity in this.context.GranularityProvider.GetGranularities())
+                foreach (var granularity in this.context.Granularities)
                 {
                     var dt = occurred ?? DateTime.UtcNow;
                     var tsround = dt.ToRoundedTimestamp(granularity.Size * granularity.Factor);

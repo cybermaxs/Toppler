@@ -10,21 +10,21 @@ namespace Toppler.Tests.Unit.Api
         [TestMethod]
         public void TopplerClient_WhenNoSetup_ShouldNoBeConnected()
         {
-            Assert.IsFalse(TopplerClient.IsConnected);
+            Assert.IsFalse(Topp.IsConnected);
         }
 
         [TestMethod]
         [ExpectedException(typeof(InvalidOperationException))]
         public void Counter_WhenNoSetup_ShouldThrowException()
         {
-            TopplerClient.Counter.HitAsync("blabla");
+            Topp.Counter.HitAsync("blabla");
         }
 
         [TestMethod]
         [ExpectedException(typeof(InvalidOperationException))]
         public void Leaderboard_WhenNoSetup_ShouldThrowException()
         {
-            TopplerClient.Ranking.GetOverallTops(Granularity.Day, 1);
+            Topp.Ranking.GetOverallTops(Granularity.Day, 1);
         }
 
         //[TestMethod]

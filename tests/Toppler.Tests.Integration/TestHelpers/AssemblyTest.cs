@@ -16,7 +16,7 @@ namespace Toppler.Tests.Integration.TestHelpers
             //flush all integration db
             RedisServer.Reset();
 
-            TopplerClient.Setup(redisConfiguration: "localhost:6379", 
+            Topp.Setup(redisConfiguration: "localhost:6379", 
               //  @namespace: "ns",
                 granularities: new Granularity[] { Granularity.Second, Granularity.Minute, Granularity.Hour, Granularity.Day });
         }

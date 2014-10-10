@@ -1,4 +1,5 @@
-﻿using System;
+﻿using StackExchange.Redis;
+using System;
 using Toppler.Api;
 using Toppler.Core;
 using Toppler.Redis;
@@ -8,9 +9,9 @@ namespace Toppler
     /// <summary>
     /// Toppler main entry point.
     /// </summary>
-    public class TopplerClient
+    public class Topp
     {
-        private static IConnectionProvider connectionProvider;
+        private static Lazy<IRedisConnection> lazyConnector;
         private static ITopplerContext options;
 
         /// <summary>
@@ -18,7 +19,12 @@ namespace Toppler
         /// </summary>
         public static bool IsConnected
         {
-            get { return connectionProvider != null && connectionProvider.IsConnected; }
+            get { return lazyConnector != null && lazyConnector.IsValueCreated && lazyConnector.Value.IsConnected; }
+        }
+
+        private static IRedisConnection Connection
+        {
+            get { return lazyConnector.Value; }
         }
 
         /// <summary>
@@ -30,10 +36,11 @@ namespace Toppler
         /// <param name="granularities">Used Granularities (Default is All : Second, Minute, Hour, Day)</param>
         public static void Setup(string redisConfiguration = "localhost:6379", int dbIndex = Constants.DefaultRedisDb, string @namespace = Constants.DefaultNamespace, Granularity[] granularities = null)
         {
-            if (options == null && connectionProvider == null)
+            var settings = ConfigurationOptions.Parse(redisConfiguration);
+            if (options == null && lazyConnector == null)
             {
                 options = new TopplerContext(@namespace, dbIndex, granularities ?? new Granularity[] { Granularity.Second, Granularity.Minute, Granularity.Hour, Granularity.Day });
-                connectionProvider = new DefaultConnectionProvider(redisConfiguration);
+                lazyConnector = new Lazy<IRedisConnection>(() => { return new StackExchangeRedisConnection(settings); });
             }
         }
 
@@ -53,10 +60,10 @@ namespace Toppler
 
         internal static ICounter CreateCounter()
         {
-            if (options == null || connectionProvider == null)
+            if (options == null)
                 throw new InvalidOperationException("Setup hasn't been called yet.");
 
-            return new Counter(connectionProvider, options);
+            return new Counter(Connection, options);
         }
         #endregion
 
@@ -77,10 +84,10 @@ namespace Toppler
 
         internal static IRanking CreateRankingApi()
         {
-            if (options == null || connectionProvider == null)
+            if (options == null)
                 throw new InvalidOperationException("Setup hasn't been called yet.");
 
-            return new Ranking(connectionProvider, options);
+            return new Ranking(Connection, options);
         }
         #endregion
 
@@ -101,10 +108,10 @@ namespace Toppler
 
         internal static IAdmin CreateAdmin()
         {
-            if (options == null || connectionProvider == null)
+            if (options == null)
                 throw new InvalidOperationException("Setup hasn't been called yet.");
 
-            return new Admin(connectionProvider, options);
+            return new Admin(Connection, options);
         }
         #endregion
     }

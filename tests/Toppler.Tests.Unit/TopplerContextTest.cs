@@ -16,13 +16,13 @@ namespace Toppler.Tests.Unit
 
             Assert.IsNotNull(context);
             Assert.IsNotNull(context.KeyFactory);
-            Assert.IsNotNull(context.GranularityProvider);
+            Assert.IsNotNull(context.Granularities);
 
             Assert.AreEqual(ns, context.Namespace);
             Assert.AreEqual(ns, context.KeyFactory.Namespace);
-            Assert.AreEqual(2, context.GranularityProvider.GetGranularities().Count());
-            Assert.IsTrue(context.GranularityProvider.GetGranularities().Contains(Granularity.Second));
-            Assert.IsTrue(context.GranularityProvider.GetGranularities().Contains(Granularity.Minute));
+            Assert.AreEqual(2, context.Granularities.Count());
+            Assert.IsTrue(context.Granularities.Contains(Granularity.Second));
+            Assert.IsTrue(context.Granularities.Contains(Granularity.Minute));
         }
     }
 }
