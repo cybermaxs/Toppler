@@ -38,7 +38,7 @@ namespace Toppler.Tests.Integration
 
             foreach (var i in Enumerable.Range(1, 10))
             {
-                Topp.Counter.HitAsync(this.TestEventSource, current, 1, this.TestDimension );
+                Topp.Counter.HitAsync(new string[] {this.TestEventSource},1L, new string[] {this.TestDimension},  current);
                 current = current.AddHours(-i);
             }
 

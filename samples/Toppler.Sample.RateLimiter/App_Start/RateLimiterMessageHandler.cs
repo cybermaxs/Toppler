@@ -36,10 +36,10 @@ namespace Toppler.Sample.RateLimiter.App_Start
 
             if (v != null && v.Hits > this.Limit)
             {
-                return new HttpResponseMessage(HttpStatusCode.BadRequest) { Content = new StringContent("Rate Limit exceeded  !"+IP+"=>"+v.Hits) };
+                return new HttpResponseMessage(HttpStatusCode.BadRequest) { Content = new StringContent("Rate Limit exceeded  !" + IP + "=>" + v.Hits) };
             }
 
-            await Topp.Counter.HitAsync(eventSource: IP, dimension: dimension);
+            await Topp.Counter.HitAsync(new string[] { IP }, 1L, new string[] { dimension });
             return await base.SendAsync(request, cancellationToken);
         }
     }

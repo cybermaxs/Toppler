@@ -54,6 +54,7 @@
     <Compile Include="Core\IKeyFactory.cs" />
     <Compile Include="Core\IWeightFunction.cs" />
     <Compile Include="Core\WeightFunction.cs" />
+    <Compile Include="ExtensionMethods.cs" />
     <Compile Include="Extensions\ArgumentCheckExtensions.cs" />
     <Compile Include="Extensions\DateTimeExtensions.cs" />
     <Compile Include="Extensions\Int64Extensions.cs" />

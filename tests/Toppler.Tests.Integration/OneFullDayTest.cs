@@ -36,7 +36,7 @@ namespace Toppler.Tests.Integration
 
             foreach (var i in Enumerable.Range(1, 86400))
             {
-                Topp.Counter.HitAsync(this.TestEventSource, current, 1, this.TestDimension);
+                Topp.Counter.HitAsync(new string[] { this.TestEventSource }, 1L, new string[] { this.TestDimension}, current);
                 current = current.AddSeconds(1);
             }
 
@@ -75,7 +75,7 @@ namespace Toppler.Tests.Integration
 
             foreach (var i in Enumerable.Range(1, 86400))
             {
-                Topp.Counter.HitAsync(this.TestEventSource, current, 1, this.TestDimension);
+                Topp.Counter.HitAsync(new string[] { this.TestEventSource }, 1L, new string[] { this.TestDimension }, current);
                 current = current.AddSeconds(1);
             }
 

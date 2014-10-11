@@ -17,7 +17,7 @@ namespace Toppler.Tests.Unit.Api
         [ExpectedException(typeof(InvalidOperationException))]
         public void Counter_WhenNoSetup_ShouldThrowException()
         {
-            Topp.Counter.HitAsync("blabla");
+            Topp.Counter.HitAsync(new string[] { "blabla"});
         }
 
         [TestMethod]

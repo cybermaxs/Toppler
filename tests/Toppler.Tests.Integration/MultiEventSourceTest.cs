@@ -70,7 +70,7 @@ namespace Toppler.Tests.Integration
         [TestCategory("Integration")]
         public void MultiEventSource_SingleHit_RandomContext()
         {
-            Topp.Counter.HitAsync(this.TestEventSources, dimension: this.TestDimension);
+            Topp.Counter.HitAsync(this.TestEventSources, dimensions: new string[] {this.TestDimension});
 
             var overall = Topp.Ranking.GetOverallTops(Granularity.Day).Result;
             var dimensioned = Topp.Ranking.GetTops(Granularity.Day, dimension: this.TestDimension).Result;
@@ -104,7 +104,7 @@ namespace Toppler.Tests.Integration
             var now = DateTime.UtcNow.AddMinutes(-60);
             foreach (var item in Enumerable.Range(1, 60))
             {
-                Topp.Counter.HitAsync(this.TestEventSources, now.AddMinutes(item), 1);
+                Topp.Counter.HitAsync(this.TestEventSources,1L, occurred: now.AddMinutes(item));
             }
 
             var overall = Topp.Ranking.GetOverallTops(Granularity.Day, 60).Result;
@@ -139,7 +139,7 @@ namespace Toppler.Tests.Integration
             var now = DateTime.UtcNow.AddMinutes(-60);
             foreach (var item in Enumerable.Range(1, 60))
             {
-                Topp.Counter.HitAsync(this.TestEventSources, now.AddMinutes(item), 1, dimension: this.TestDimension);
+                Topp.Counter.HitAsync(this.TestEventSources, 1, new string[] { this.TestDimension}, now.AddMinutes(item) );
             }
 
             var overall = Topp.Ranking.GetOverallTops(Granularity.Day, 60).Result;
@@ -177,9 +177,9 @@ namespace Toppler.Tests.Integration
 
             foreach (var i in Enumerable.Range(1, 3600))
             {
-                Topp.Counter.HitAsync(this.TestEventSources, current, 1, this.TestDimension + "-v1");
-                Topp.Counter.HitAsync(this.TestEventSources, current, 1, this.TestDimension + "-v2");
-                Topp.Counter.HitAsync(this.TestEventSources, current, 1, this.TestDimension + "-v3");
+                Topp.Counter.HitAsync(this.TestEventSources, 1, new string[] {this.TestDimension + "-v1"}, current);
+                Topp.Counter.HitAsync(this.TestEventSources, 1, new string[] {this.TestDimension + "-v2"}, current);
+                Topp.Counter.HitAsync(this.TestEventSources, 1, new string[] { this.TestDimension + "-v3" }, current);
                 current = current.AddSeconds(1);
             }
 

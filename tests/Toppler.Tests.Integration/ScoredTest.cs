@@ -35,8 +35,8 @@ namespace Toppler.Tests.Integration
             var current = new DateTime(now.Year, now.Month, now.Day, now.Hour, now.Minute, 0, DateTimeKind.Utc);
             foreach (var item in Enumerable.Range(1, 5))
             {
-                Topp.Counter.HitAsync(this.TestEventSource + "-1", current, item, this.TestDimension);
-                Topp.Counter.HitAsync(this.TestEventSource + "-2", current, item, this.TestDimension);
+                Topp.Counter.HitAsync(new string[] {this.TestEventSource + "-1" }, item, new string[] { this.TestDimension}, current);
+                Topp.Counter.HitAsync(new string[] { this.TestEventSource + "-3" }, item, new string[] { this.TestDimension }, current);
                 current = current.AddMinutes(1);
             }
 

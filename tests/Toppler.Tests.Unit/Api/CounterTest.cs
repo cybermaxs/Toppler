@@ -35,7 +35,7 @@ namespace Toppler.Tests.Unit.Api
             ITopplerContext context = new TopplerContext(Constants.DefaultNamespace, Constants.DefaultRedisDb, null);
             var api = new Counter(provider.Object, context);
 
-            var execTask = api.HitAsync("");
+            var execTask = api.HitAsync(new string [] {""});
 
             Assert.IsNotNull(execTask);
             Assert.IsFalse(execTask.Result);
@@ -48,7 +48,7 @@ namespace Toppler.Tests.Unit.Api
             ITopplerContext context = new TopplerContext(Constants.DefaultNamespace, Constants.DefaultRedisDb, null);
             var api = new Counter(provider.Object, context);
 
-            var execTask = api.HitAsync("test", DateTime.Now);
+            var execTask = api.HitAsync(new string[] { "test"}, 1, occurred: DateTime.Now);
 
             Assert.IsNotNull(execTask);
             Assert.IsFalse(execTask.Result);
@@ -60,7 +60,7 @@ namespace Toppler.Tests.Unit.Api
         {
             //basic setups
             Mock<ITransaction> mockOfTransaction = new Mock<ITransaction>();
-            mockOfTransaction.Setup(b => b.SetAddAsync(It.IsAny<RedisKey>(), It.IsAny<RedisValue>(), It.IsAny<CommandFlags>())).ReturnsAsync(true);
+            mockOfTransaction.Setup(b => b.SetAddAsync(It.IsAny<RedisKey>(), It.IsAny<RedisValue[]>(), It.IsAny<CommandFlags>())).ReturnsAsync(1);
             mockOfTransaction.Setup(b => b.SortedSetIncrementAsync(It.IsAny<RedisKey>(), It.IsAny<RedisValue>(), It.IsAny<double>(), It.IsAny<CommandFlags>())).ReturnsAsync(0D);
             mockOfTransaction.Setup(b => b.KeyExpireAsync(It.IsAny<RedisKey>(), It.IsAny<DateTime?>(), It.IsAny<CommandFlags>())).ReturnsAsync(true);
             mockOfTransaction.Setup(b => b.ExecuteAsync(It.IsAny<CommandFlags>())).ReturnsAsync(true);
@@ -85,14 +85,14 @@ namespace Toppler.Tests.Unit.Api
             var ts_day = 405907200L;
             var ts_year = 378432000L;
 
-            var execTask = api.HitAsync("pong", ts.ToDateTime(), 10L, "mycontext");
+            var execTask = api.HitAsync(new string[] { "pong"}, 10L, new string[] {"mycontext"}, ts.ToDateTime());
 
             Assert.IsNotNull(execTask);
             Assert.IsTrue(execTask.Result);
 
             mockOfTransaction.Verify(b => b.ExecuteAsync(It.IsAny<CommandFlags>()), Times.Once);
             //set
-            mockOfTransaction.Verify(b => b.SetAddAsync("ping:"+Constants.SetAllDimensions, "mycontext", It.IsAny<CommandFlags>()), Times.Once);
+            mockOfTransaction.Verify(b => b.SetAddAsync("ping:"+Constants.SetAllDimensions, new RedisValue[] { "mycontext"}, It.IsAny<CommandFlags>()), Times.Once);
 
             mockOfTransaction.Verify(b => b.SortedSetIncrementAsync(It.IsAny<RedisKey>(), It.IsAny<RedisValue>(), It.IsAny<double>(), It.IsAny<CommandFlags>()), Times.Exactly(4));
             mockOfTransaction.Verify(b => b.SortedSetIncrementAsync("ping:mycontext:second:" + ts_hour + ":" + ts, "pong", 10D, It.IsAny<CommandFlags>()), Times.Once);
