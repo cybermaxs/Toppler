@@ -11,27 +11,25 @@ namespace Toppler.Api
 {
     public class Ranking : IRanking
     {
-        private readonly IRedisConnection connectionProvider;
+        private readonly IRedisConnection redisConnection;
         private readonly ITopplerContext context;
 
-        internal Ranking(IRedisConnection connectionProvider, ITopplerContext context)
+        internal Ranking(IRedisConnection redisConnection, ITopplerContext context)
         {
-            if (connectionProvider == null)
+            if (redisConnection == null)
                 throw new ArgumentNullException("connectionProvider");
 
             if (context == null)
                 throw new ArgumentNullException("context");
 
-            this.connectionProvider = connectionProvider;
+            this.redisConnection = redisConnection;
             this.context = context;
         }
 
         public async Task<IEnumerable<TopResult>> GetTops(Granularity granularity, int resolution = 1, DateTime? from = null, string[] dimensions = null, RankingOptions options=null)
         {
-            var db = this.connectionProvider.GetDatabase(this.context.DbIndex);
-
+            var db = this.redisConnection.GetDatabase(this.context.DbIndex);
             options = options ?? new RankingOptions();
-
             var allkeys = await this.GetKeys(db, granularity, resolution, from, dimensions);
 
             var cacheKey = this.context.KeyFactory.NsKey(dimensions!=null ? this.context.KeyFactory.RawKey(dimensions): Constants.SetAllDimensions, Constants.CacheKeyPart, granularity.Name, resolution.ToString());
@@ -53,49 +51,15 @@ namespace Toppler.Api
             var entries = await db.SortedSetRangeByRankWithScoresAsync(cacheKey, 0, options.TopN, Order.Descending);
             return entries.Select((e,i) =>
             {
-                return new TopResult(e.Element.ToString(), e.Score, i+1);
+                return new TopResult(e.Element, e.Score, i+1);
             });
-        }
-
-        public async Task<IEnumerable<TopResult>> GetOverallTops(Granularity granularity, int resolution = 1, DateTime? from = null, RankingOptions options=null)
-        {
-            var db = this.connectionProvider.GetDatabase(this.context.DbIndex);
-
-            options = options ?? new RankingOptions();
-
-            string[] dimensions = null;
-            var allkeys = await this.GetKeys(db, granularity, resolution, from, dimensions);
-
-            var cacheKey = this.context.KeyFactory.NsKey(Constants.SetAllDimensions, Constants.CacheKeyPart, granularity.Name, resolution.ToString());
-
-            if (options.CacheDuration != TimeSpan.Zero)
-            {
-                //use cache
-                bool exists = await db.KeyExistsAsync(cacheKey);
-                if (!exists)
-                {
-                    await db.SortedSetCombineAndStoreAsync(SetOperation.Union, cacheKey, allkeys);
-                    await db.KeyExpireAsync(cacheKey, DateTime.UtcNow.Add(options.CacheDuration), CommandFlags.FireAndForget);
-                }
-            }
-            else
-                await db.SortedSetCombineAndStoreAsync(SetOperation.Union, cacheKey, allkeys);
-
-            var entries = await db.SortedSetRangeByRankWithScoresAsync(cacheKey, 0, options.TopN, Order.Descending);
-            return entries.Select((e,i) =>
-            {
-                return new TopResult(e.Element.ToString(), e.Score, i+1);
-            });
-
         }
 
         public async Task<IEnumerable<ScoredResult>> GetScoredResults(Granularity granularity, int resolution = 1, IWeightFunction weightFunc = null, DateTime? from = null, string dimension = Constants.DefaultDimension, RankingOptions options = null)
         {
-            var db = this.connectionProvider.GetDatabase(this.context.DbIndex);
-
-            var allkeys = await this.GetKeys(db, granularity, resolution, from, new string[] { dimension });
-
+            var db = this.redisConnection.GetDatabase(this.context.DbIndex);
             options = options ?? new RankingOptions();
+            var allkeys = await this.GetKeys(db, granularity, resolution, from, new string[] { dimension });
 
             var allweights = new List<double>();
             for(var k=0; k<allkeys.Length; k++)
@@ -121,7 +85,7 @@ namespace Toppler.Api
             var entries = await db.SortedSetRangeByRankWithScoresAsync(cacheKey, 0, options.TopN, Order.Descending);
             return entries.Select((e,i) =>
             {
-                return new ScoredResult(e.Element.ToString(), e.Score, i+1);
+                return new ScoredResult(e.Element, e.Score, i+1);
             });
 
         }

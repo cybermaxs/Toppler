@@ -17,15 +17,7 @@ namespace Toppler.Api
         /// <param name="options">Ranking options</param>
         /// <returns>List of TopResult</returns>
         Task<IEnumerable<TopResult>> GetTops(Granularity granularity, int resolution = 1, DateTime? from = null, string[] dimensions = null, RankingOptions options = null);
-        /// <summary>
-        /// Get overall Tops (for all dimensions)
-        /// </summary>
-        /// <param name="granularity">Granularity (Second, Minute, Hour, Day)</param>
-        /// <param name="resolution">Number of points</param>
-        /// <param name="from">Until this date.</param>
-        /// <param name="options">Ranking options</param>
-        /// <returns>List of TopResult</returns>
-        Task<IEnumerable<TopResult>> GetOverallTops(Granularity granularity, int resolution = 1, DateTime? from = null, RankingOptions options = null);
+
         /// <summary>
         /// Get scored results. Scores are calculated by the weight funtions.
         /// </summary>
