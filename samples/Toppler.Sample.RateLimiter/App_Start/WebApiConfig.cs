@@ -27,7 +27,7 @@ namespace Toppler.Sample.RateLimiter
                 defaults: new { id = RouteParameter.Optional }
             );
 
-            config.MessageHandlers.Add(new RateLimiterMessageHandler(Granularity.Second, 10, 5));
+            config.MessageHandlers.Add(new RateLimiterMessageHandler(Granularity.Second, 60, 10));
         }
     }
 }

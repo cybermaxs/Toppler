@@ -1,0 +1,70 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Bootstrap 101 Template</title>
+    <!-- Bootstrap -->
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+
+</head>
+<body>
+    <div class="container">
+        <h1>Simple Rate Limiter example</h1>
+        <div class="separator"></div>
+        <input id="btn" type="button" value="Start/Stop" />
+        <div id="log" class="well"></div>
+    </div>
+
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://code.jquery.com/jquery-2.1.1.js" type="text/javascript"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+
+    <script type="text/javascript">
+        var timer;
+        var start = function (timeout) {
+
+            if (timeout < 250) timeout = 250;
+
+            timer = setInterval(function () {
+
+                $.get('api/data')
+                .success(function (result) {
+                    $("#log").append(new Date(Date.now()).toUTCString() + ':OK:' + result + '<br/>');
+                })
+                .error(function (jqXHR, textStatus, errorThrown) {
+                    $("#log").append(new Date(Date.now()).toUTCString() + ':FAILED:' + jqXHR.responseText + '<br/>');
+                });
+
+            }, timeout);
+        };
+
+        var stop = function () {
+            clearInterval(timer);
+            timer=null;
+        };
+
+        $("#btn").click(function () {
+            if (timer)
+                stop();
+            else
+                start(1000);
+        });
+    </script>
+
+
+</body>
+</html>

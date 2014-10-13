@@ -25,21 +25,22 @@ namespace Toppler.Sample.RateLimiter.App_Start
 
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
-            //var dimension = request.GetActionDescriptor().ControllerDescriptor.ControllerName;
-            //var action = request.GetActionDescriptor().ActionName;
-            var dimension = "API";
-            var action = request.RequestUri.ToString();
+            var path = request.RequestUri.ToString();
             var IP = ((HttpContextBase)request.Properties["MS_HttpContext"]).Request.UserHostAddress;
 
-            var tops = await Topp.Ranking.GetTops(this.Granularity, this.Range, DateTime.UtcNow, new string[] { dimension });
-            var v = tops.FirstOrDefault(t => t.EventSource == action);
+            var rate = await Topp.Ranking.Details(IP, this.Granularity, this.Range, DateTime.UtcNow, new string[] { path });
 
-            if (v != null && v.Hits > this.Limit)
+            if (rate != null && rate.Hits > this.Limit)
             {
-                return new HttpResponseMessage(HttpStatusCode.BadRequest) { Content = new StringContent("Rate Limit exceeded  !" + IP + "=>" + v.Hits) };
+                return new HttpResponseMessage(HttpStatusCode.BadRequest) { Content = new StringContent("Rate Limit exceeded  !" + IP + "=>" + rate.Hits) };
+            }
+            else
+            {
+                await Topp.Counter.HitAsync(new string[] { IP }, 1L, new string[] { path });
+                return new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent("Current Rate Limit : " + IP + "=>" + rate.Hits) };
             }
 
-            await Topp.Counter.HitAsync(new string[] { IP }, 1L, new string[] { dimension });
+            
             return await base.SendAsync(request, cancellationToken);
         }
     }

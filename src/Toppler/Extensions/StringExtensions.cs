@@ -5,7 +5,7 @@ namespace Toppler.Extensions
 {
     public static class StringExtensions
     {
-        private static Regex alphaRegex = new Regex("^[a-zA-Z0-9]*$", RegexOptions.Compiled | RegexOptions.Singleline);
+        private static Regex alphaRegex = new Regex("^[a-zA-Z0-9.:]*$", RegexOptions.Compiled | RegexOptions.Singleline);
         private const string separator = ":";
 
         /// <summary>
