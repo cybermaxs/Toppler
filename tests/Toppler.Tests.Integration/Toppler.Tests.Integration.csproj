@@ -66,6 +66,7 @@
     <Compile Include="AdminTest.cs" />
     <Compile Include="CacheTest.cs" />
     <Compile Include="TestHelpers\TestBase.cs" />
+    <Compile Include="RankTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\Toppler\Toppler.csproj">

@@ -3,13 +3,16 @@ namespace Toppler.Api
 {
     public class ScoredResult
     {
-        public string EventSource { get; set; }
-        public double Score { get; set; }
+        public string EventSource { get; private set; }
+        public double Score { get; private set; }
+        public int Rank { get; private set; }
 
-        public ScoredResult(string eventSource, double score)
+
+        public ScoredResult(string eventSource, double score, int rank)
         {
             this.EventSource = eventSource;
             this.Score = score;
+            this.Rank = rank;
         }
     }
 }

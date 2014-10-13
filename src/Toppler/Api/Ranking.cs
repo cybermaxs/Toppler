@@ -51,9 +51,9 @@ namespace Toppler.Api
             
 
             var entries = await db.SortedSetRangeByRankWithScoresAsync(cacheKey, 0, options.TopN, Order.Descending);
-            return entries.Select(i =>
+            return entries.Select((e,i) =>
             {
-                return new TopResult(i.Element.ToString(), i.Score);
+                return new TopResult(e.Element.ToString(), e.Score, i+1);
             });
         }
 
@@ -82,9 +82,9 @@ namespace Toppler.Api
                 await db.SortedSetCombineAndStoreAsync(SetOperation.Union, cacheKey, allkeys);
 
             var entries = await db.SortedSetRangeByRankWithScoresAsync(cacheKey, 0, options.TopN, Order.Descending);
-            return entries.Select(i =>
+            return entries.Select((e,i) =>
             {
-                return new TopResult(i.Element.ToString(), i.Score);
+                return new TopResult(e.Element.ToString(), e.Score, i+1);
             });
 
         }
@@ -119,9 +119,9 @@ namespace Toppler.Api
                 await db.SortedSetCombineAndStoreAsync(SetOperation.Union, cacheKey, allkeys, allweights.ToArray());
 
             var entries = await db.SortedSetRangeByRankWithScoresAsync(cacheKey, 0, options.TopN, Order.Descending);
-            return entries.Select(i =>
+            return entries.Select((e,i) =>
             {
-                return new ScoredResult(i.Element.ToString(), i.Score);
+                return new ScoredResult(e.Element.ToString(), e.Score, i+1);
             });
 
         }
