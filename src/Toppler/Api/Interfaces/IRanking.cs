@@ -7,7 +7,6 @@ namespace Toppler.Api
 {
     public interface IRanking
     {
-        Task<IEnumerable<TopResult>> GetTops(Granularity granularity, int resolution = 1, DateTime? from = null, string dimension = Constants.DefaultDimension, RankingOptions options = null);
         /// <summary>
         /// Get Tops for one or more dimensions.
         /// </summary>

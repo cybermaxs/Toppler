@@ -89,11 +89,6 @@ namespace Toppler.Api
 
         }
 
-        public Task<IEnumerable<TopResult>> GetTops(Granularity granularity, int resolution = 1, DateTime? from = null, string dimension = Constants.DefaultDimension, RankingOptions options = null)
-        {
-            return GetTops(granularity, resolution, from, new string[] { dimension }, options);
-        }
-
         public async Task<IEnumerable<ScoredResult>> GetScoredResults(Granularity granularity, int resolution = 1, IWeightFunction weightFunc = null, DateTime? from = null, string dimension = Constants.DefaultDimension, RankingOptions options = null)
         {
             var db = this.connectionProvider.GetDatabase(this.context.DbIndex);

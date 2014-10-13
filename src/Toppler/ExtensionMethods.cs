@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Toppler.Api;
+using Toppler.Core;
 
 namespace Toppler
 {
@@ -12,6 +13,7 @@ namespace Toppler
     /// </summary>
     public static class ExtensionMethods
     {
+        #region Counter Api
         public static Task<bool> HitAsync(this ICounter api, string eventSource)
         {
             return api.HitAsync(new string[] { eventSource });
@@ -26,6 +28,14 @@ namespace Toppler
         {
             return api.HitAsync(new string[] { eventSource }, hits, new string[] { dimension });
         }
+        #endregion
+
+        #region Ranking Api
+        public static Task<IEnumerable<TopResult>> GetTops(this IRanking api, Granularity granularity, int resolution = 1, DateTime? from = null, string dimension = Constants.DefaultDimension, RankingOptions options = null)
+        {
+            return api.GetTops(granularity, resolution, from, new string[] { dimension }, options);
+        }
+        #endregion
 
         //public static Task<bool> HitAsync(this ICounter api, string eventSource, long hits = 1)
         //{
