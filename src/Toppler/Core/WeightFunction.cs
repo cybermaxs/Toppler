@@ -14,7 +14,7 @@ namespace Toppler.Core
             this.Weight = func;
         }
 
-        public static IWeightFunction Constant = new WeightFunction("constant", (k, n) => { return 1; });
+        public static IWeightFunction Empty = new WeightFunction("constant", (k, n) => { return 1; });
         public static IWeightFunction Random = new WeightFunction("random", (k, n) => { return new Random().NextDouble(); });
         public static IWeightFunction StdGeometric = new WeightFunction("stdGeometric", (k, n) => { return 2D * Math.Pow(2D, k); });
         public static IWeightFunction StdArithmetic = new WeightFunction("stdArithmetic", (k, n) => { return k + 1; });

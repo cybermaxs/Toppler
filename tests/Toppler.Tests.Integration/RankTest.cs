@@ -40,7 +40,7 @@ namespace Toppler.Tests.Integration
         {
             for (int i = 0; i < this.TestEventSources.Length; i++)
             {
-                Topp.Counter.HitAsync(this.TestEventSources[i], 10-i);
+                Topp.Counter.HitAsync(this.TestEventSources[i], 10 - i);
             }
 
             var overall = Topp.Ranking.GetOverallTops(Granularity.Day).Result;
@@ -56,7 +56,7 @@ namespace Toppler.Tests.Integration
                 var source = overall.SingleOrDefault(r => r.EventSource == this.TestEventSources[i]);
                 Assert.IsNotNull(source);
                 Assert.AreEqual(10 - i, source.Hits);
-                Assert.AreEqual(i+1, source.Rank);
+                Assert.AreEqual(i + 1, source.Rank);
             }
 
             //dimensioned
@@ -66,8 +66,38 @@ namespace Toppler.Tests.Integration
                 var source = dimensioned.SingleOrDefault(r => r.EventSource == this.TestEventSources[i]);
                 Assert.IsNotNull(source);
                 Assert.AreEqual(10 - i, source.Hits);
-                Assert.AreEqual(i+1, source.Rank);
+                Assert.AreEqual(i + 1, source.Rank);
             }
+        }
+
+        [TestMethod]
+        [TestCategory("Integration")]
+        public void DetailsTest_MultipleHit_WhenShouldBeCorrect()
+        {
+            var now = DateTime.UtcNow.Date;
+
+            var current = new DateTime(now.Year, now.Month, now.Day, 0, 0, 0, DateTimeKind.Utc);
+
+            foreach (var i in Enumerable.Range(1, 3600))
+            {
+                for (int j = 0; j < this.TestEventSources.Length; j++)
+                {
+                    Topp.Counter.HitAsync(new string[] { this.TestEventSources[j] }, this.TestEventSources.Length-j, new string[] { this.TestDimension }, current);
+                }
+
+                current = current.AddSeconds(1);
+            }
+
+            //check
+            for (int i = 0; i < this.TestEventSources.Length; i++)
+            {
+                var details = Topp.Ranking.Details(this.TestEventSources[i], Granularity.Hour, 1, current, new string[] { this.TestDimension }).Result;
+                Assert.IsNotNull(details);
+                Assert.AreEqual(this.TestEventSources[i], details.EventSource);
+                Assert.AreEqual((this.TestEventSources.Length - i) * 3600, details.Hits);
+                Assert.AreEqual(i + 1, details.Rank);
+            }
+
         }
     }
 }

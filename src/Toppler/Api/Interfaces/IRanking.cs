@@ -18,6 +18,8 @@ namespace Toppler.Api
         /// <returns>List of TopResult</returns>
         Task<IEnumerable<TopResult>> GetTops(Granularity granularity, int resolution = 1, DateTime? from = null, string[] dimensions = null, RankingOptions options = null);
 
+        Task<TopResult> Details(string eventSource, Granularity granularity, int resolution = 1, DateTime? from = null, string[] dimensions = null, RankingOptions options = null);
+
         /// <summary>
         /// Get scored results. Scores are calculated by the weight funtions.
         /// </summary>
@@ -28,6 +30,6 @@ namespace Toppler.Api
         /// <param name="dimensions">Requested Dimension(s)</param>
         /// <param name="options">Ranking options</param>
         /// <returns></returns>
-        Task<IEnumerable<ScoredResult>> GetScoredResults(Granularity granularity, int resolution = 1, IWeightFunction weightFunc = null, DateTime? from = null, string dimensions = Constants.DefaultDimension, RankingOptions options = null);
+        Task<IEnumerable<ScoredResult>> GetScoredResults(Granularity granularity, int resolution = 1, DateTime? from = null, string dimensions = Constants.DefaultDimension, RankingOptions options = null);
     }
 }

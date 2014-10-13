@@ -13,7 +13,7 @@ namespace Toppler.Tests.Unit.Core
         public void Progression_None()
         {
             var NbItems = 5;
-            var actual = Enumerable.Range(0, NbItems).Select(k => WeightFunction.Constant.Weight(k, NbItems)).ToArray();
+            var actual = Enumerable.Range(0, NbItems).Select(k => WeightFunction.Empty.Weight(k, NbItems)).ToArray();
 
             double[] expected = new double[] { 1D, 1D, 1D, 1D, 1D };
             CollectionAssert.AreEqual(expected, actual);

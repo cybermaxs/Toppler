@@ -13,6 +13,7 @@ namespace Toppler.Api
     {
         private readonly IRedisConnection redisConnection;
         private readonly ITopplerContext context;
+        private readonly IDatabaseAsync DB;
 
         internal Ranking(IRedisConnection redisConnection, ITopplerContext context)
         {
@@ -24,73 +25,75 @@ namespace Toppler.Api
 
             this.redisConnection = redisConnection;
             this.context = context;
+            this.DB = this.redisConnection.GetDatabase(context.DbIndex);
         }
 
-        public async Task<IEnumerable<TopResult>> GetTops(Granularity granularity, int resolution = 1, DateTime? from = null, string[] dimensions = null, RankingOptions options=null)
+        public async Task<IEnumerable<TopResult>> GetTops(Granularity granularity, int resolution = 1, DateTime? from = null, string[] dimensions = null, RankingOptions options = null)
         {
-            var db = this.redisConnection.GetDatabase(this.context.DbIndex);
             options = options ?? new RankingOptions();
-            var allkeys = await this.GetKeys(db, granularity, resolution, from, dimensions);
+            var cacheKey = await ComputeAggregation(granularity, resolution, from, dimensions, options);
 
-            var cacheKey = this.context.KeyFactory.NsKey(dimensions!=null ? this.context.KeyFactory.RawKey(dimensions): Constants.SetAllDimensions, Constants.CacheKeyPart, granularity.Name, resolution.ToString());
-
-            if(options.CacheDuration!= TimeSpan.Zero)
+            var entries = await this.DB.SortedSetRangeByRankWithScoresAsync(cacheKey, 0, options.TopN, Order.Descending);
+            return entries.Select((e, i) =>
             {
-                //use cache
-                bool exists = await db.KeyExistsAsync(cacheKey);
-                if (!exists)
-                {
-                    await db.SortedSetCombineAndStoreAsync(SetOperation.Union, cacheKey, allkeys);
-                    await db.KeyExpireAsync(cacheKey, DateTime.UtcNow.Add(options.CacheDuration), CommandFlags.FireAndForget);
-                }
-            }
-            else
-                await db.SortedSetCombineAndStoreAsync(SetOperation.Union, cacheKey, allkeys);
-            
-
-            var entries = await db.SortedSetRangeByRankWithScoresAsync(cacheKey, 0, options.TopN, Order.Descending);
-            return entries.Select((e,i) =>
-            {
-                return new TopResult(e.Element, e.Score, i+1);
+                return new TopResult(e.Element, e.Score, i + 1);
             });
         }
 
-        public async Task<IEnumerable<ScoredResult>> GetScoredResults(Granularity granularity, int resolution = 1, IWeightFunction weightFunc = null, DateTime? from = null, string dimension = Constants.DefaultDimension, RankingOptions options = null)
+        public async Task<IEnumerable<ScoredResult>> GetScoredResults(Granularity granularity, int resolution = 1, DateTime? from = null, string dimension = Constants.DefaultDimension, RankingOptions options = null)
         {
-            var db = this.redisConnection.GetDatabase(this.context.DbIndex);
             options = options ?? new RankingOptions();
-            var allkeys = await this.GetKeys(db, granularity, resolution, from, new string[] { dimension });
+            var cacheKey = await ComputeAggregation(granularity, resolution, from, new string[] { dimension }, options);
+
+            var entries = await DB.SortedSetRangeByRankWithScoresAsync(cacheKey, 0, options.TopN, Order.Descending);
+            return entries.Select((e, i) =>
+            {
+                return new ScoredResult(e.Element, e.Score, i + 1);
+            });
+
+        }
+
+        public async Task<TopResult> Details(string eventSource, Granularity granularity, int resolution = 1, DateTime? from = null, string[] dimensions = null, RankingOptions options = null)
+        {
+            options = options ?? new RankingOptions();
+            var cacheKey = await ComputeAggregation(granularity, resolution, from, dimensions, options);
+
+            var rank = await DB.SortedSetRankAsync(cacheKey, eventSource, Order.Descending);
+            var score = await DB.SortedSetScoreAsync(cacheKey, eventSource);
+
+            return new TopResult(eventSource, score, rank+1);
+        }
+
+        private async Task<string> ComputeAggregation(Granularity granularity, int resolution = 1, DateTime? from = null, string[] dimensions = null, RankingOptions options = null)
+        {
+            var allkeys = await this.GetKeys(this.DB, granularity, resolution, from, dimensions);
 
             var allweights = new List<double>();
-            for(var k=0; k<allkeys.Length; k++)
+            for (var k = 0; k < allkeys.Length; k++)
             {
-                allweights.Add(weightFunc.Weight(k, allkeys.Count()));
+                allweights.Add(options.weightFunc.Weight(k, allkeys.Count()));
             }
 
-            var cacheKey = this.context.KeyFactory.NsKey(dimension, Constants.CacheKeyPart, weightFunc.Name, granularity.Name, resolution.ToString());
+            var cacheKey = this.context.KeyFactory.NsKey(dimensions != null ? this.context.KeyFactory.RawKey(dimensions) : Constants.SetAllDimensions, Constants.CacheKeyPart, options.weightFunc.Name, granularity.Name, resolution.ToString());
 
-            if (options.CacheDuration != TimeSpan.Zero)
+            if (options.CacheDuration.HasValue && options.CacheDuration.Value != TimeSpan.Zero)
             {
                 //use cache
-                bool exists = await db.KeyExistsAsync(cacheKey);
+                bool exists = await this.DB.KeyExistsAsync(cacheKey);
                 if (!exists)
                 {
-                    await db.SortedSetCombineAndStoreAsync(SetOperation.Union, cacheKey, allkeys, allweights.ToArray());
-                    await db.KeyExpireAsync(cacheKey, DateTime.UtcNow.Add(options.CacheDuration), CommandFlags.FireAndForget);
+                    await this.DB.SortedSetCombineAndStoreAsync(SetOperation.Union, cacheKey, allkeys);
+                    await this.DB.KeyExpireAsync(cacheKey, DateTime.UtcNow.Add(options.CacheDuration.Value), CommandFlags.FireAndForget);
                 }
             }
             else
-                await db.SortedSetCombineAndStoreAsync(SetOperation.Union, cacheKey, allkeys, allweights.ToArray());
+                await this.DB.SortedSetCombineAndStoreAsync(SetOperation.Union, cacheKey, allkeys, allweights.ToArray());
 
-            var entries = await db.SortedSetRangeByRankWithScoresAsync(cacheKey, 0, options.TopN, Order.Descending);
-            return entries.Select((e,i) =>
-            {
-                return new ScoredResult(e.Element, e.Score, i+1);
-            });
-
+            return cacheKey;
         }
 
-        private async Task<RedisKey[]> GetKeys(IDatabase db, Granularity granularity, int resolution, DateTime? from, string[] dimensions = null)
+
+        private async Task<RedisKey[]> GetKeys(IDatabaseAsync db, Granularity granularity, int resolution, DateTime? from, string[] dimensions = null)
         {
             if (dimensions == null)
             {
