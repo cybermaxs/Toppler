@@ -15,10 +15,10 @@ namespace Monitoring.Api.Test.Extensions
         }
 
         [TestMethod]
-        public void AlphaNumericString_WhenStringAndUnderscore_ShouldReturnFalse()
+        public void AlphaNumericString_WhenStringAndUnderscore_ShouldReturnTrue()
         {
             string mykey = "Adsd_flk23_14dfsf";
-            Assert.IsFalse(mykey.AlphaNumericString(), "should be alphanum");
+            Assert.IsTrue(mykey.AlphaNumericString(), "should be alphanum");
         }
 
         [TestMethod]

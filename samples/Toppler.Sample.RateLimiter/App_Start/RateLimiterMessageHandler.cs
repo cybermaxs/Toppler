@@ -30,14 +30,14 @@ namespace Toppler.Sample.RateLimiter.App_Start
 
             var rate = await Top.Ranking.DetailsAsync(IP, this.Granularity, this.Range, DateTime.UtcNow, new string[] { path });
 
-            if (rate != null && rate.Hits > this.Limit)
+            if (rate != null && rate.Score > this.Limit)
             {
-                return new HttpResponseMessage(HttpStatusCode.BadRequest) { Content = new StringContent("Rate Limit exceeded  !" + IP + "=>" + rate.Hits) };
+                return new HttpResponseMessage(HttpStatusCode.BadRequest) { Content = new StringContent("Rate Limit exceeded  !" + IP + "=>" + rate.Score) };
             }
             else
             {
                 await Top.Counter.HitAsync(new string[] { IP }, 1L, new string[] { path });
-                return new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent("Current Rate Limit : " + IP + "=>" + rate.Hits) };
+                return new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent("Current Rate Limit : " + IP + "=>" + rate.Score) };
             }
 
             

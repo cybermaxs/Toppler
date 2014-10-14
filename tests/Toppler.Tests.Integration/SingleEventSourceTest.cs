@@ -41,12 +41,12 @@ namespace Toppler.Tests.Integration
             //overall
             Assert.AreEqual(1, overall.Count());
             Assert.AreEqual(this.TestEventSource, overall.First().EventSource);
-            Assert.AreEqual(1D, overall.First().Hits);
+            Assert.AreEqual(1D, overall.First().Score);
 
             //dimensioned
             Assert.AreEqual(1, dimensioned.Count());
             Assert.AreEqual(this.TestEventSource, dimensioned.First().EventSource);
-            Assert.AreEqual(1D, dimensioned.First().Hits);
+            Assert.AreEqual(1D, dimensioned.First().Score);
         }
 
         [TestMethod]
@@ -64,12 +64,12 @@ namespace Toppler.Tests.Integration
             //overall
             Assert.AreEqual(1, overall.Count());
             Assert.AreEqual(this.TestEventSource, overall.First().EventSource);
-            Assert.AreEqual(1D, overall.First().Hits);
+            Assert.AreEqual(1D, overall.First().Score);
 
             //dimensioned
             Assert.AreEqual(1, dimensioned.Count());
             Assert.AreEqual(this.TestEventSource, dimensioned.First().EventSource);
-            Assert.AreEqual(1D, dimensioned.First().Hits);
+            Assert.AreEqual(1D, dimensioned.First().Score);
         }
 
         [TestMethod]
@@ -91,12 +91,12 @@ namespace Toppler.Tests.Integration
             //overall
             Assert.AreEqual(1, overall.Count());
             Assert.AreEqual(this.TestEventSource, overall.First().EventSource);
-            Assert.AreEqual(60D, overall.First().Hits);
+            Assert.AreEqual(60D, overall.First().Score);
 
             //dimensioned
             Assert.AreEqual(1, dimensioned.Count());
             Assert.AreEqual(this.TestEventSource, dimensioned.First().EventSource);
-            Assert.AreEqual(60D, dimensioned.First().Hits);
+            Assert.AreEqual(60D, dimensioned.First().Score);
         }
 
         [TestMethod]
@@ -118,12 +118,12 @@ namespace Toppler.Tests.Integration
             //overall
             Assert.AreEqual(1, overall.Count());
             Assert.AreEqual(this.TestEventSource, overall.First().EventSource);
-            Assert.AreEqual(60D, overall.First().Hits);
+            Assert.AreEqual(60D, overall.First().Score);
 
             //dimensioned
             Assert.AreEqual(1, dimensioned.Count());
             Assert.AreEqual(this.TestEventSource, dimensioned.First().EventSource);
-            Assert.AreEqual(60D, dimensioned.First().Hits);
+            Assert.AreEqual(60D, dimensioned.First().Score);
         }
 
         [TestMethod]
@@ -148,25 +148,25 @@ namespace Toppler.Tests.Integration
             Assert.AreEqual(this.TestEventSource, alltops.First().EventSource);
             Assert.AreEqual(1, alltops.Count());
             foreach (var r in alltops)
-                Assert.AreEqual(3600 * 3, r.Hits);
+                Assert.AreEqual(3600 * 3, r.Score);
 
             //v1
             var topsv1 = Top.Ranking.GetTops(Granularity.Day, 1, current, this.TestDimension + "-v1").Result;
             Assert.AreEqual(this.TestEventSource, topsv1.First().EventSource);
             Assert.AreEqual(1, topsv1.Count());
-            Assert.AreEqual(3600, topsv1.First().Hits);
+            Assert.AreEqual(3600, topsv1.First().Score);
 
             //v2
             var topsv2 = Top.Ranking.GetTops(Granularity.Day, 1, current, this.TestDimension + "-v2").Result;
             Assert.AreEqual(this.TestEventSource, topsv2.First().EventSource);
             Assert.AreEqual(1, topsv2.Count());
-            Assert.AreEqual(3600, topsv2.First().Hits);
+            Assert.AreEqual(3600, topsv2.First().Score);
 
             //v3
             var topsv3 = Top.Ranking.GetTops(Granularity.Day, 1, current, this.TestDimension + "-v3").Result;
             Assert.AreEqual(this.TestEventSource, topsv3.First().EventSource);
             Assert.AreEqual(1, topsv3.Count());
-            Assert.AreEqual(3600, topsv3.First().Hits);
+            Assert.AreEqual(3600, topsv3.First().Score);
 
         }
     }

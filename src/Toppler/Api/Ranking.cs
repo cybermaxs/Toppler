@@ -40,19 +40,6 @@ namespace Toppler.Api
             });
         }
 
-        public async Task<IEnumerable<ScoredResult>> AllScoredAsync(Granularity granularity, int range = 1, DateTime? from = null, string dimension = Constants.DefaultDimension, RankingOptions options = null)
-        {
-            options = options ?? new RankingOptions();
-            var cacheKey = await ComputeAggregation(granularity, range, from, new string[] { dimension }, options);
-
-            var entries = await DB.SortedSetRangeByRankWithScoresAsync(cacheKey, 0, options.TopN, Order.Descending);
-            return entries.Select((e, i) =>
-            {
-                return new ScoredResult(e.Element, e.Score, i + 1);
-            });
-
-        }
-
         public async Task<TopResult> DetailsAsync(string eventSource, Granularity granularity, int range = 1, DateTime? from = null, string[] dimensions = null, RankingOptions options = null)
         {
             options = options ?? new RankingOptions();

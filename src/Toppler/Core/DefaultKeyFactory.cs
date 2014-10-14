@@ -22,16 +22,6 @@ namespace Toppler.Core
             this.@namespace = @namespace;
         }
 
-
-        private string InternalKeyFactory(bool includeNs = true, params string[] parts)
-        {
-            if (!string.IsNullOrWhiteSpace(@namespace) && includeNs)
-                return @namespace + separator + string.Join(separator, parts.Where(p => !string.IsNullOrWhiteSpace(p)));
-            else
-                return string.Join(separator, parts.Where(p => !string.IsNullOrWhiteSpace(p)));
-
-        }
-
         /// <summary>
         /// Generate a key by prefixing namespace.
         /// </summary>
@@ -39,7 +29,10 @@ namespace Toppler.Core
         /// <returns></returns>
         public string NsKey(params string[] parts)
         {
-            return InternalKeyFactory(true, parts);
+            if (!string.IsNullOrWhiteSpace(@namespace))
+                return @namespace + separator + string.Join(separator, parts);
+            else
+                return string.Join(separator, parts);
         }
 
         /// <summary>
@@ -49,7 +42,7 @@ namespace Toppler.Core
         /// <returns></returns>
         public string RawKey(params string[] parts)
         {
-            return InternalKeyFactory(false, parts);
+            return string.Join(separator, parts);
         }
     }
 }

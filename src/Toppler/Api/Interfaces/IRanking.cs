@@ -19,17 +19,5 @@ namespace Toppler.Api
         Task<IEnumerable<TopResult>> AllAsync(Granularity granularity, int range = 1, DateTime? from = null, string[] dimensions = null, RankingOptions options = null);
 
         Task<TopResult> DetailsAsync(string eventSource, Granularity granularity, int range = 1, DateTime? from = null, string[] dimensions = null, RankingOptions options = null);
-
-        /// <summary>
-        /// Get scored results. Scores are calculated by the weight funtions.
-        /// </summary>
-        /// <param name="granularity">Granularity (Second, Minute, Hour, Day)</param>
-        /// <param name="range">Number of points</param>
-        /// <param name="weightFunc">Used Function to calculate score. See WeightFunctions</param>
-        /// <param name="from">Until this date.</param>
-        /// <param name="dimensions">Requested Dimension(s)</param>
-        /// <param name="options">Ranking options</param>
-        /// <returns></returns>
-        Task<IEnumerable<ScoredResult>> AllScoredAsync(Granularity granularity, int range = 1, DateTime? from = null, string dimensions = Constants.DefaultDimension, RankingOptions options = null);
     }
 }

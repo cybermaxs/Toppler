@@ -7,10 +7,10 @@ namespace Toppler.Core
 {
     public class Granularity : IGranularity
     {
-        public string Name { get; set; }
-        public int Size { get; set; }
-        public int Ttl { get; set; }
-        public int Factor { get; set; }
+        public string Name;
+        public int Size;
+        public int Ttl;
+        public int Factor;
 
         public Granularity(string name, int size = 1, int ttl = 60, int factor = 1)
         {

@@ -71,7 +71,6 @@
     <Compile Include="Redis\Scope\IScopeProvider.cs" />
     <Compile Include="Redis\Scope\TransactionScopeProvider.cs" />
     <Compile Include="Redis\Scope\BatchScopeProvider.cs" />
-    <Compile Include="Api\ScoredResult.cs" />
     <Compile Include="TopplerContext.cs" />
     <Compile Include="Top.cs" />
     <Compile Include="Api\TopResult.cs" />

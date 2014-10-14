@@ -53,7 +53,7 @@ namespace Toppler.Tests.Integration
             {
                 var source = overall.SingleOrDefault(r => r.EventSource == eventSource);
                 Assert.IsNotNull(source);
-                Assert.AreEqual(1D, source.Hits);
+                Assert.AreEqual(1D, source.Score);
             }
 
             //dimensioned
@@ -62,7 +62,7 @@ namespace Toppler.Tests.Integration
             {
                 var source = dimensioned.SingleOrDefault(r => r.EventSource == eventSource);
                 Assert.IsNotNull(source);
-                Assert.AreEqual(1D, source.Hits);
+                Assert.AreEqual(1D, source.Score);
             }
         }
 
@@ -84,7 +84,7 @@ namespace Toppler.Tests.Integration
             {
                 var source = overall.SingleOrDefault(r => r.EventSource == eventSource);
                 Assert.IsNotNull(source);
-                Assert.AreEqual(1D, source.Hits);
+                Assert.AreEqual(1D, source.Score);
             }
 
             //dimensioned
@@ -93,7 +93,7 @@ namespace Toppler.Tests.Integration
             {
                 var source = dimensioned.SingleOrDefault(r => r.EventSource == eventSource);
                 Assert.IsNotNull(source);
-                Assert.AreEqual(1D, source.Hits);
+                Assert.AreEqual(1D, source.Score);
             }
         }
 
@@ -119,7 +119,7 @@ namespace Toppler.Tests.Integration
             {
                 var source = overall.SingleOrDefault(r => r.EventSource == eventSource);
                 Assert.IsNotNull(source);
-                Assert.AreEqual(60D, source.Hits);
+                Assert.AreEqual(60D, source.Score);
             }
 
             //dimensioned
@@ -128,7 +128,7 @@ namespace Toppler.Tests.Integration
             {
                 var source = dimensioned.SingleOrDefault(r => r.EventSource == eventSource);
                 Assert.IsNotNull(source);
-                Assert.AreEqual(60D, source.Hits);
+                Assert.AreEqual(60D, source.Score);
             }
         }
 
@@ -154,7 +154,7 @@ namespace Toppler.Tests.Integration
             {
                 var source = overall.SingleOrDefault(r => r.EventSource == eventSource);
                 Assert.IsNotNull(source);
-                Assert.AreEqual(60D, source.Hits);
+                Assert.AreEqual(60D, source.Score);
             }
 
             //dimensioned
@@ -163,7 +163,7 @@ namespace Toppler.Tests.Integration
             {
                 var source = dimensioned.SingleOrDefault(r => r.EventSource == eventSource);
                 Assert.IsNotNull(source);
-                Assert.AreEqual(60D, source.Hits);
+                Assert.AreEqual(60D, source.Score);
             }
         }
 
@@ -190,7 +190,7 @@ namespace Toppler.Tests.Integration
             {
                 var source = alltops.SingleOrDefault(r => r.EventSource == eventSource);
                 Assert.IsNotNull(source);
-                Assert.AreEqual(3600 * 3, source.Hits);
+                Assert.AreEqual(3600 * 3, source.Score);
             }      
 
             //v1
@@ -200,7 +200,7 @@ namespace Toppler.Tests.Integration
             {
                 var source = topsv1.SingleOrDefault(r => r.EventSource == eventSource);
                 Assert.IsNotNull(source);
-                Assert.AreEqual(3600, source.Hits);
+                Assert.AreEqual(3600, source.Score);
             }
 
             ////v2
@@ -210,7 +210,7 @@ namespace Toppler.Tests.Integration
             {
                 var source = topsv2.SingleOrDefault(r => r.EventSource == eventSource);
                 Assert.IsNotNull(source);
-                Assert.AreEqual(3600, source.Hits);
+                Assert.AreEqual(3600, source.Score);
             }
 
             ////v3
@@ -220,7 +220,7 @@ namespace Toppler.Tests.Integration
             {
                 var source = topsv3.SingleOrDefault(r => r.EventSource == eventSource);
                 Assert.IsNotNull(source);
-                Assert.AreEqual(3600, source.Hits);
+                Assert.AreEqual(3600, source.Score);
             }
         }
     }

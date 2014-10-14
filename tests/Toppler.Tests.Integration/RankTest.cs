@@ -55,7 +55,7 @@ namespace Toppler.Tests.Integration
             {
                 var source = overall.SingleOrDefault(r => r.EventSource == this.TestEventSources[i]);
                 Assert.IsNotNull(source);
-                Assert.AreEqual(10 - i, source.Hits);
+                Assert.AreEqual(10 - i, source.Score);
                 Assert.AreEqual(i + 1, source.Rank);
             }
 
@@ -65,7 +65,7 @@ namespace Toppler.Tests.Integration
             {
                 var source = dimensioned.SingleOrDefault(r => r.EventSource == this.TestEventSources[i]);
                 Assert.IsNotNull(source);
-                Assert.AreEqual(10 - i, source.Hits);
+                Assert.AreEqual(10 - i, source.Score);
                 Assert.AreEqual(i + 1, source.Rank);
             }
         }
@@ -94,7 +94,7 @@ namespace Toppler.Tests.Integration
                 var details = Top.Ranking.DetailsAsync(this.TestEventSources[i], Granularity.Hour, 1, current, new string[] { this.TestDimension }).Result;
                 Assert.IsNotNull(details);
                 Assert.AreEqual(this.TestEventSources[i], details.EventSource);
-                Assert.AreEqual((this.TestEventSources.Length - i) * 3600, details.Hits);
+                Assert.AreEqual((this.TestEventSources.Length - i) * 3600, details.Score);
                 Assert.AreEqual(i + 1, details.Rank);
             }
 

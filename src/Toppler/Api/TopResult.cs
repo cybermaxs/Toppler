@@ -4,13 +4,13 @@ namespace Toppler.Api
     public class TopResult
     {
         public string EventSource { get; private set; }
-        public double? Hits { get; private set; }
+        public double? Score { get; private set; }
         public long? Rank { get; private set; }
 
-        public TopResult(string eventSource, double? hits, long? rank)
+        public TopResult(string eventSource, double? score, long? rank)
         {
             this.EventSource = eventSource;
-            this.Hits = hits;
+            this.Score = score;
             this.Rank = rank;
         }
     }
