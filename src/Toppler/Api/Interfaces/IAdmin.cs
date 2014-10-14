@@ -9,6 +9,6 @@ namespace Toppler.Api
         /// </summary>
         /// <param name="dimensions"></param>
         /// <returns></returns>
-        Task FlushDimensions(string[] dimensions = null);
+        Task FlushDimensionsAsync(string[] dimensions = null);
     }
 }

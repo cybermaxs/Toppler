@@ -40,7 +40,7 @@ namespace Toppler.Tests.Integration
 
             Task.WaitAll(tasks.ToArray());
 
-            Topp.Admin.FlushDimensions().Wait();
+            Topp.Admin.FlushDimensionsAsync().Wait();
 
             var mpx = ConnectionMultiplexer.Connect("localhost");
             Assert.AreEqual(0, mpx.GetServer("localhost", 6379).Keys().Count());

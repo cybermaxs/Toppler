@@ -28,7 +28,7 @@ namespace Toppler.Sample.RateLimiter.App_Start
             var path = request.RequestUri.ToString();
             var IP = ((HttpContextBase)request.Properties["MS_HttpContext"]).Request.UserHostAddress;
 
-            var rate = await Topp.Ranking.Details(IP, this.Granularity, this.Range, DateTime.UtcNow, new string[] { path });
+            var rate = await Topp.Ranking.DetailsAsync(IP, this.Granularity, this.Range, DateTime.UtcNow, new string[] { path });
 
             if (rate != null && rate.Hits > this.Limit)
             {

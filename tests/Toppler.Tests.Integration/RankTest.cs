@@ -91,7 +91,7 @@ namespace Toppler.Tests.Integration
             //check
             for (int i = 0; i < this.TestEventSources.Length; i++)
             {
-                var details = Topp.Ranking.Details(this.TestEventSources[i], Granularity.Hour, 1, current, new string[] { this.TestDimension }).Result;
+                var details = Topp.Ranking.DetailsAsync(this.TestEventSources[i], Granularity.Hour, 1, current, new string[] { this.TestDimension }).Result;
                 Assert.IsNotNull(details);
                 Assert.AreEqual(this.TestEventSources[i], details.EventSource);
                 Assert.AreEqual((this.TestEventSources.Length - i) * 3600, details.Hits);

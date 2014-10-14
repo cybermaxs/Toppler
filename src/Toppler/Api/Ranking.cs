@@ -28,10 +28,10 @@ namespace Toppler.Api
             this.DB = this.redisConnection.GetDatabase(context.DbIndex);
         }
 
-        public async Task<IEnumerable<TopResult>> GetTops(Granularity granularity, int resolution = 1, DateTime? from = null, string[] dimensions = null, RankingOptions options = null)
+        public async Task<IEnumerable<TopResult>> GetTopsAsync(Granularity granularity, int range = 1, DateTime? from = null, string[] dimensions = null, RankingOptions options = null)
         {
             options = options ?? new RankingOptions();
-            var cacheKey = await ComputeAggregation(granularity, resolution, from, dimensions, options);
+            var cacheKey = await ComputeAggregation(granularity, range, from, dimensions, options);
 
             var entries = await this.DB.SortedSetRangeByRankWithScoresAsync(cacheKey, 0, options.TopN, Order.Descending);
             return entries.Select((e, i) =>
@@ -40,10 +40,10 @@ namespace Toppler.Api
             });
         }
 
-        public async Task<IEnumerable<ScoredResult>> GetScoredResults(Granularity granularity, int resolution = 1, DateTime? from = null, string dimension = Constants.DefaultDimension, RankingOptions options = null)
+        public async Task<IEnumerable<ScoredResult>> GetScoredResultsAsync(Granularity granularity, int range = 1, DateTime? from = null, string dimension = Constants.DefaultDimension, RankingOptions options = null)
         {
             options = options ?? new RankingOptions();
-            var cacheKey = await ComputeAggregation(granularity, resolution, from, new string[] { dimension }, options);
+            var cacheKey = await ComputeAggregation(granularity, range, from, new string[] { dimension }, options);
 
             var entries = await DB.SortedSetRangeByRankWithScoresAsync(cacheKey, 0, options.TopN, Order.Descending);
             return entries.Select((e, i) =>
@@ -53,10 +53,10 @@ namespace Toppler.Api
 
         }
 
-        public async Task<TopResult> Details(string eventSource, Granularity granularity, int resolution = 1, DateTime? from = null, string[] dimensions = null, RankingOptions options = null)
+        public async Task<TopResult> DetailsAsync(string eventSource, Granularity granularity, int range = 1, DateTime? from = null, string[] dimensions = null, RankingOptions options = null)
         {
             options = options ?? new RankingOptions();
-            var cacheKey = await ComputeAggregation(granularity, resolution, from, dimensions, options);
+            var cacheKey = await ComputeAggregation(granularity, range, from, dimensions, options);
 
             var rank = await DB.SortedSetRankAsync(cacheKey, eventSource, Order.Descending);
             var score = await DB.SortedSetScoreAsync(cacheKey, eventSource);
@@ -64,9 +64,9 @@ namespace Toppler.Api
             return new TopResult(eventSource, score, rank+1);
         }
 
-        private async Task<string> ComputeAggregation(Granularity granularity, int resolution = 1, DateTime? from = null, string[] dimensions = null, RankingOptions options = null)
+        private async Task<string> ComputeAggregation(Granularity granularity, int range = 1, DateTime? from = null, string[] dimensions = null, RankingOptions options = null)
         {
-            var allkeys = await this.GetKeys(this.DB, granularity, resolution, from, dimensions);
+            var allkeys = await this.GetKeys(this.DB, granularity, range, from, dimensions);
 
             var allweights = new List<double>();
             for (var k = 0; k < allkeys.Length; k++)
@@ -74,7 +74,7 @@ namespace Toppler.Api
                 allweights.Add(options.weightFunc.Weight(k, allkeys.Count()));
             }
 
-            var cacheKey = this.context.KeyFactory.NsKey(dimensions != null ? this.context.KeyFactory.RawKey(dimensions) : Constants.SetAllDimensions, Constants.CacheKeyPart, options.weightFunc.Name, granularity.Name, resolution.ToString());
+            var cacheKey = this.context.KeyFactory.NsKey(dimensions != null ? this.context.KeyFactory.RawKey(dimensions) : Constants.SetAllDimensions, Constants.CacheKeyPart, options.weightFunc.Name, granularity.Name, range.ToString());
 
             if (options.CacheDuration.HasValue && options.CacheDuration.Value != TimeSpan.Zero)
             {
@@ -92,8 +92,7 @@ namespace Toppler.Api
             return cacheKey;
         }
 
-
-        private async Task<RedisKey[]> GetKeys(IDatabaseAsync db, Granularity granularity, int resolution, DateTime? from, string[] dimensions = null)
+        private async Task<RedisKey[]> GetKeys(IDatabaseAsync db, Granularity granularity, int range, DateTime? from, string[] dimensions = null)
         {
             if (dimensions == null)
             {
@@ -102,7 +101,7 @@ namespace Toppler.Api
             }
 
             var toInSeconds = (from ?? DateTime.UtcNow).ToRoundedTimestamp(granularity.Factor);
-            var fromInSeconds = toInSeconds - resolution * granularity.Factor;
+            var fromInSeconds = toInSeconds - range * granularity.Factor;
 
             var allkeys = new List<RedisKey>();
             foreach (var kvp in granularity.BuildFlatMap(fromInSeconds, toInSeconds))

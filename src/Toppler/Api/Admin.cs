@@ -25,7 +25,7 @@ namespace Toppler.Api
             this.context = context;
         }
 
-        public async Task FlushDimensions(string[] dimensions = null)
+        public async Task FlushDimensionsAsync(string[] dimensions = null)
         {
             var db = this.redisConnection.GetDatabase(this.context.DbIndex);
             if (dimensions == null)
