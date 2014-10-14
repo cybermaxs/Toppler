@@ -60,7 +60,6 @@
     <Compile Include="Extensions\Int64Extensions.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="Api\Interfaces\ICounter.cs" />
-    <Compile Include="Core\IGranularity.cs" />
     <Compile Include="Api\Interfaces\IRanking.cs" />
     <Compile Include="Helpers\TaskHelper.cs" />
     <Compile Include="ITopplerContext.cs" />

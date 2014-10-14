@@ -5,7 +5,7 @@ using Toppler.Extensions;
 
 namespace Toppler.Core
 {
-    public class Granularity : IGranularity
+    public class Granularity
     {
         public string Name;
         public int Size;
