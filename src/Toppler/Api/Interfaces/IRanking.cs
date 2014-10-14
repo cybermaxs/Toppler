@@ -16,7 +16,7 @@ namespace Toppler.Api
         /// <param name="dimensions">Requested Dimension(s)</param>
         /// <param name="options">Ranking options</param>
         /// <returns>List of TopResult</returns>
-        Task<IEnumerable<TopResult>> GetTopsAsync(Granularity granularity, int range = 1, DateTime? from = null, string[] dimensions = null, RankingOptions options = null);
+        Task<IEnumerable<TopResult>> AllAsync(Granularity granularity, int range = 1, DateTime? from = null, string[] dimensions = null, RankingOptions options = null);
 
         Task<TopResult> DetailsAsync(string eventSource, Granularity granularity, int range = 1, DateTime? from = null, string[] dimensions = null, RankingOptions options = null);
 
@@ -30,6 +30,6 @@ namespace Toppler.Api
         /// <param name="dimensions">Requested Dimension(s)</param>
         /// <param name="options">Ranking options</param>
         /// <returns></returns>
-        Task<IEnumerable<ScoredResult>> GetScoredResultsAsync(Granularity granularity, int range = 1, DateTime? from = null, string dimensions = Constants.DefaultDimension, RankingOptions options = null);
+        Task<IEnumerable<ScoredResult>> AllScoredAsync(Granularity granularity, int range = 1, DateTime? from = null, string dimensions = Constants.DefaultDimension, RankingOptions options = null);
     }
 }

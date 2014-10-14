@@ -12,7 +12,7 @@ namespace Toppler.Sample.RateLimiter
         protected void Application_Start()
         {
             GlobalConfiguration.Configure(WebApiConfig.Register);
-            Topp.Setup();
+            Top.Setup();
         }
     }
 }

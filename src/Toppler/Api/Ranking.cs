@@ -28,7 +28,7 @@ namespace Toppler.Api
             this.DB = this.redisConnection.GetDatabase(context.DbIndex);
         }
 
-        public async Task<IEnumerable<TopResult>> GetTopsAsync(Granularity granularity, int range = 1, DateTime? from = null, string[] dimensions = null, RankingOptions options = null)
+        public async Task<IEnumerable<TopResult>> AllAsync(Granularity granularity, int range = 1, DateTime? from = null, string[] dimensions = null, RankingOptions options = null)
         {
             options = options ?? new RankingOptions();
             var cacheKey = await ComputeAggregation(granularity, range, from, dimensions, options);
@@ -40,7 +40,7 @@ namespace Toppler.Api
             });
         }
 
-        public async Task<IEnumerable<ScoredResult>> GetScoredResultsAsync(Granularity granularity, int range = 1, DateTime? from = null, string dimension = Constants.DefaultDimension, RankingOptions options = null)
+        public async Task<IEnumerable<ScoredResult>> AllScoredAsync(Granularity granularity, int range = 1, DateTime? from = null, string dimension = Constants.DefaultDimension, RankingOptions options = null)
         {
             options = options ?? new RankingOptions();
             var cacheKey = await ComputeAggregation(granularity, range, from, new string[] { dimension }, options);
@@ -64,6 +64,7 @@ namespace Toppler.Api
             return new TopResult(eventSource, score, rank+1);
         }
 
+        #region Private methods
         private async Task<string> ComputeAggregation(Granularity granularity, int range = 1, DateTime? from = null, string[] dimensions = null, RankingOptions options = null)
         {
             var allkeys = await this.GetKeys(this.DB, granularity, range, from, dimensions);
@@ -112,5 +113,6 @@ namespace Toppler.Api
 
             return allkeys.ToArray();
         }
+        #endregion
     }
 }

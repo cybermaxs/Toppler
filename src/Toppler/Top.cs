@@ -9,7 +9,7 @@ namespace Toppler
     /// <summary>
     /// Toppler main entry point.
     /// </summary>
-    public class Topp
+    public class Top
     {
         private static Lazy<IRedisConnection> lazyConnector;
         private static ITopplerContext options;

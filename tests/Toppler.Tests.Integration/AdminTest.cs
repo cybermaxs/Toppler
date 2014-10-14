@@ -35,12 +35,12 @@ namespace Toppler.Tests.Integration
             var tasks = new List<Task>();
             foreach (var i in Enumerable.Range(0, 10))
             {
-                tasks.Add(Topp.Counter.HitAsync(new string[] {this.TestEventSource},1L, new string[] { this.TestDimension},  DateTime.UtcNow.Date.AddDays(i - 100)));
+                tasks.Add(Top.Counter.HitAsync(new string[] {this.TestEventSource},1L, new string[] { this.TestDimension},  DateTime.UtcNow.Date.AddDays(i - 100)));
             }
 
             Task.WaitAll(tasks.ToArray());
 
-            Topp.Admin.FlushDimensionsAsync().Wait();
+            Top.Admin.FlushDimensionsAsync().Wait();
 
             var mpx = ConnectionMultiplexer.Connect("localhost");
             Assert.AreEqual(0, mpx.GetServer("localhost", 6379).Keys().Count());

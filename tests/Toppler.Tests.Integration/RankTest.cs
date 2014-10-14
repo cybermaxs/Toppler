@@ -40,11 +40,11 @@ namespace Toppler.Tests.Integration
         {
             for (int i = 0; i < this.TestEventSources.Length; i++)
             {
-                Topp.Counter.HitAsync(this.TestEventSources[i], 10 - i);
+                Top.Counter.HitAsync(this.TestEventSources[i], 10 - i);
             }
 
-            var overall = Topp.Ranking.GetOverallTops(Granularity.Day).Result;
-            var dimensioned = Topp.Ranking.GetTops(Granularity.Day, dimension: Constants.DefaultDimension).Result;
+            var overall = Top.Ranking.GetOverallTops(Granularity.Day).Result;
+            var dimensioned = Top.Ranking.GetTops(Granularity.Day, dimension: Constants.DefaultDimension).Result;
 
             Assert.IsNotNull(overall);
             Assert.IsNotNull(dimensioned);
@@ -82,7 +82,7 @@ namespace Toppler.Tests.Integration
             {
                 for (int j = 0; j < this.TestEventSources.Length; j++)
                 {
-                    Topp.Counter.HitAsync(new string[] { this.TestEventSources[j] }, this.TestEventSources.Length-j, new string[] { this.TestDimension }, current);
+                    Top.Counter.HitAsync(new string[] { this.TestEventSources[j] }, this.TestEventSources.Length-j, new string[] { this.TestDimension }, current);
                 }
 
                 current = current.AddSeconds(1);
@@ -91,7 +91,7 @@ namespace Toppler.Tests.Integration
             //check
             for (int i = 0; i < this.TestEventSources.Length; i++)
             {
-                var details = Topp.Ranking.DetailsAsync(this.TestEventSources[i], Granularity.Hour, 1, current, new string[] { this.TestDimension }).Result;
+                var details = Top.Ranking.DetailsAsync(this.TestEventSources[i], Granularity.Hour, 1, current, new string[] { this.TestDimension }).Result;
                 Assert.IsNotNull(details);
                 Assert.AreEqual(this.TestEventSources[i], details.EventSource);
                 Assert.AreEqual((this.TestEventSources.Length - i) * 3600, details.Hits);

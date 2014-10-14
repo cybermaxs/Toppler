@@ -28,7 +28,7 @@ namespace Toppler.Sample.RateLimiter.App_Start
             var path = request.RequestUri.ToString();
             var IP = ((HttpContextBase)request.Properties["MS_HttpContext"]).Request.UserHostAddress;
 
-            var rate = await Topp.Ranking.DetailsAsync(IP, this.Granularity, this.Range, DateTime.UtcNow, new string[] { path });
+            var rate = await Top.Ranking.DetailsAsync(IP, this.Granularity, this.Range, DateTime.UtcNow, new string[] { path });
 
             if (rate != null && rate.Hits > this.Limit)
             {
@@ -36,7 +36,7 @@ namespace Toppler.Sample.RateLimiter.App_Start
             }
             else
             {
-                await Topp.Counter.HitAsync(new string[] { IP }, 1L, new string[] { path });
+                await Top.Counter.HitAsync(new string[] { IP }, 1L, new string[] { path });
                 return new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent("Current Rate Limit : " + IP + "=>" + rate.Hits) };
             }
 

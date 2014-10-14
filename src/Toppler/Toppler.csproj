@@ -62,6 +62,7 @@
     <Compile Include="Api\Interfaces\ICounter.cs" />
     <Compile Include="Core\IGranularity.cs" />
     <Compile Include="Api\Interfaces\IRanking.cs" />
+    <Compile Include="Helpers\TaskHelper.cs" />
     <Compile Include="ITopplerContext.cs" />
     <Compile Include="Api\Ranking.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -72,7 +73,7 @@
     <Compile Include="Redis\Scope\BatchScopeProvider.cs" />
     <Compile Include="Api\ScoredResult.cs" />
     <Compile Include="TopplerContext.cs" />
-    <Compile Include="Topp.cs" />
+    <Compile Include="Top.cs" />
     <Compile Include="Api\TopResult.cs" />
   </ItemGroup>
   <ItemGroup>

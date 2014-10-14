@@ -38,14 +38,14 @@ namespace Toppler.Tests.Integration
 
             foreach (var i in Enumerable.Range(1, 10))
             {
-                Topp.Counter.HitAsync(new string[] {this.TestEventSource},1L, new string[] {this.TestDimension},  current);
+                Top.Counter.HitAsync(new string[] {this.TestEventSource},1L, new string[] {this.TestDimension},  current);
                 current = current.AddHours(-i);
             }
 
-            var res1 = Topp.Ranking.GetTops(Granularity.Hour, 5, dimension: this.TestDimension).Result;
+            var res1 = Top.Ranking.GetTops(Granularity.Hour, 5, dimension: this.TestDimension).Result;
            Assert.IsNotNull(res1);
-           var res2 = Topp.Ranking.GetTops(Granularity.Hour, 5, dimension: this.TestDimension).Result;
-           var res3 = Topp.Ranking.GetTops(Granularity.Hour, 5, dimension: this.TestDimension).Result;
+           var res2 = Top.Ranking.GetTops(Granularity.Hour, 5, dimension: this.TestDimension).Result;
+           var res3 = Top.Ranking.GetTops(Granularity.Hour, 5, dimension: this.TestDimension).Result;
 
 
         }

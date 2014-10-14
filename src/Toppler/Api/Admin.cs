@@ -12,6 +12,7 @@ namespace Toppler.Api
     {
         private readonly IRedisConnection redisConnection;
         private readonly ITopplerContext context;
+        private readonly IDatabaseAsync DB;
 
         internal Admin(IRedisConnection redisConnection, ITopplerContext context)
         {
@@ -23,14 +24,14 @@ namespace Toppler.Api
 
             this.redisConnection = redisConnection;
             this.context = context;
+            this.DB = this.redisConnection.GetDatabase(context.DbIndex);
         }
 
         public async Task FlushDimensionsAsync(string[] dimensions = null)
         {
-            var db = this.redisConnection.GetDatabase(this.context.DbIndex);
             if (dimensions == null)
             {
-                var values = await db.SetMembersAsync(this.context.KeyFactory.NsKey(Constants.SetAllDimensions));
+                var values = await this.DB.SetMembersAsync(this.context.KeyFactory.NsKey(Constants.SetAllDimensions));
                 dimensions = values.Select(s => s.ToString()).ToArray();
             }
 
@@ -48,11 +49,11 @@ namespace Toppler.Api
                         allkeys.Add(this.context.KeyFactory.NsKey(context, granularity.Name, kvp.Key.ToString(), kvp.Value.ToString()));
                 }
 
-                await db.KeyDeleteAsync(allkeys.ToArray(), CommandFlags.FireAndForget);
+                await this.DB.KeyDeleteAsync(allkeys.ToArray(), CommandFlags.FireAndForget);
             }
 
             foreach (var dimension in dimensions)
-                await db.SetRemoveAsync(this.context.KeyFactory.NsKey(Constants.SetAllDimensions), dimension);
+                await this.DB.SetRemoveAsync(this.context.KeyFactory.NsKey(Constants.SetAllDimensions), dimension);
         }
     }
 }
