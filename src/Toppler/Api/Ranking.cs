@@ -31,7 +31,7 @@ namespace Toppler.Api
         public async Task<IEnumerable<TopResult>> AllAsync(Granularity granularity, int range = 1, DateTime? from = null, string[] dimensions = null, RankingOptions options = null)
         {
             options = options ?? new RankingOptions();
-            var cacheKey = await ComputeAggregation(granularity, range, from, dimensions, options);
+            var cacheKey = await ComputeAggregationAsync(granularity, range, from, dimensions, options);
 
             var entries = await this.DB.SortedSetRangeByRankWithScoresAsync(cacheKey, 0, options.TopN, Order.Descending);
             return entries.Select((e, i) =>
@@ -43,7 +43,7 @@ namespace Toppler.Api
         public async Task<TopResult> DetailsAsync(string eventSource, Granularity granularity, int range = 1, DateTime? from = null, string[] dimensions = null, RankingOptions options = null)
         {
             options = options ?? new RankingOptions();
-            var cacheKey = await ComputeAggregation(granularity, range, from, dimensions, options);
+            var cacheKey = await ComputeAggregationAsync(granularity, range, from, dimensions, options);
 
             var rank = await DB.SortedSetRankAsync(cacheKey, eventSource, Order.Descending);
             var score = await DB.SortedSetScoreAsync(cacheKey, eventSource);
@@ -52,9 +52,9 @@ namespace Toppler.Api
         }
 
         #region Private methods
-        private async Task<string> ComputeAggregation(Granularity granularity, int range = 1, DateTime? from = null, string[] dimensions = null, RankingOptions options = null)
+        private async Task<string> ComputeAggregationAsync(Granularity granularity, int range = 1, DateTime? from = null, string[] dimensions = null, RankingOptions options = null)
         {
-            var allkeys = await this.GetKeys(this.DB, granularity, range, from, dimensions);
+            var allkeys = await this.GetKeysAsync(this.DB, granularity, range, from, dimensions);
 
             var allweights = new List<double>();
             for (var k = 0; k < allkeys.Length; k++)
@@ -80,10 +80,11 @@ namespace Toppler.Api
             return cacheKey;
         }
 
-        private async Task<RedisKey[]> GetKeys(IDatabaseAsync db, Granularity granularity, int range, DateTime? from, string[] dimensions = null)
+        private async Task<RedisKey[]> GetKeysAsync(IDatabaseAsync db, Granularity granularity, int range, DateTime? from, string[] dimensions = null)
         {
-            if (dimensions == null)
+            if (dimensions == null || dimensions.Length==0)
             {
+                // dimensions is null => load all registered dimensions from DB
                 var values = await db.SetMembersAsync(this.context.KeyFactory.NsKey(Constants.SetAllDimensions));
                 dimensions = values.Select(s => s.ToString()).ToArray();
             }
@@ -94,8 +95,10 @@ namespace Toppler.Api
             var allkeys = new List<RedisKey>();
             foreach (var kvp in granularity.BuildFlatMap(fromInSeconds, toInSeconds))
             {
-                foreach (var dimension in dimensions)
-                    allkeys.Add(this.context.KeyFactory.NsKey(dimension, granularity.Name, kvp.Key.ToString(), kvp.Value.ToString()));
+                for (var d = 0; d <= dimensions.Length; d++ )
+                {
+                    allkeys.Add(this.context.KeyFactory.NsKey(dimensions[d], granularity.Name, kvp.Key.ToString(), kvp.Value.ToString()));
+                }                      
             }
 
             return allkeys.ToArray();

@@ -43,8 +43,8 @@ namespace Toppler.Tests.Integration
                 Top.Counter.HitAsync(this.TestEventSources[i], 10 - i);
             }
 
-            var overall = Top.Ranking.GetOverallTops(Granularity.Day).Result;
-            var dimensioned = Top.Ranking.GetTops(Granularity.Day, dimension: Constants.DefaultDimension).Result;
+            var overall = Top.Ranking.AllAsync(Granularity.Day).Result;
+            var dimensioned = Top.Ranking.AllAsync(Granularity.Day, dimension: Constants.DefaultDimension).Result;
 
             Assert.IsNotNull(overall);
             Assert.IsNotNull(dimensioned);

@@ -42,10 +42,10 @@ namespace Toppler.Tests.Integration
                 current = current.AddHours(-i);
             }
 
-            var res1 = Top.Ranking.GetTops(Granularity.Hour, 5, dimension: this.TestDimension).Result;
+            var res1 = Top.Ranking.AllAsync(Granularity.Hour, 5, dimension: this.TestDimension).Result;
            Assert.IsNotNull(res1);
-           var res2 = Top.Ranking.GetTops(Granularity.Hour, 5, dimension: this.TestDimension).Result;
-           var res3 = Top.Ranking.GetTops(Granularity.Hour, 5, dimension: this.TestDimension).Result;
+           var res2 = Top.Ranking.AllAsync(Granularity.Hour, 5, dimension: this.TestDimension).Result;
+           var res3 = Top.Ranking.AllAsync(Granularity.Hour, 5, dimension: this.TestDimension).Result;
 
 
         }

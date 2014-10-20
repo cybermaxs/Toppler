@@ -31,7 +31,7 @@ namespace Toppler
         #endregion
 
         #region Ranking Api
-        public static Task<IEnumerable<TopResult>> GetTops(this IRanking api, Granularity granularity, int resolution = 1, DateTime? from = null, string dimension = Constants.DefaultDimension, RankingOptions options = null)
+        public static Task<IEnumerable<TopResult>> AllAsync(this IRanking api, Granularity granularity, int resolution = 1, DateTime? from = null, string dimension = Constants.DefaultDimension, RankingOptions options = null)
         {
             return api.AllAsync(granularity, resolution, from, new string[] { dimension }, options);
         }
@@ -44,7 +44,7 @@ namespace Toppler
         /// <param name="from">Until this date.</param>
         /// <param name="options">Ranking options</param>
         /// <returns>List of TopResult</returns>
-        public static Task<IEnumerable<TopResult>> GetOverallTops(this IRanking api, Granularity granularity, int resolution = 1, DateTime? from = null, RankingOptions options = null)
+        public static Task<IEnumerable<TopResult>> AllAsync(this IRanking api, Granularity granularity, int resolution = 1, DateTime? from = null, RankingOptions options = null)
         {
             return api.AllAsync(granularity, resolution, from, null, options);
         }

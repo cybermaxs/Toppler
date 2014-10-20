@@ -41,8 +41,8 @@ namespace Toppler.Tests.Integration
         {
             Top.Counter.HitAsync(this.TestEventSources);
 
-            var overall = Top.Ranking.GetOverallTops(Granularity.Day).Result;
-            var dimensioned = Top.Ranking.GetTops(Granularity.Day, dimension: Constants.DefaultDimension).Result;
+            var overall = Top.Ranking.AllAsync(Granularity.Day).Result;
+            var dimensioned = Top.Ranking.AllAsync(Granularity.Day, dimension: Constants.DefaultDimension).Result;
 
             Assert.IsNotNull(overall);
             Assert.IsNotNull(dimensioned);
@@ -72,8 +72,8 @@ namespace Toppler.Tests.Integration
         {
             Top.Counter.HitAsync(this.TestEventSources, dimensions: new string[] {this.TestDimension});
 
-            var overall = Top.Ranking.GetOverallTops(Granularity.Day).Result;
-            var dimensioned = Top.Ranking.GetTops(Granularity.Day, dimension: this.TestDimension).Result;
+            var overall = Top.Ranking.AllAsync(Granularity.Day).Result;
+            var dimensioned = Top.Ranking.AllAsync(Granularity.Day, dimension: this.TestDimension).Result;
 
             Assert.IsNotNull(overall);
             Assert.IsNotNull(dimensioned);
@@ -107,8 +107,8 @@ namespace Toppler.Tests.Integration
                 Top.Counter.HitAsync(this.TestEventSources,1L, occurred: now.AddMinutes(item));
             }
 
-            var overall = Top.Ranking.GetOverallTops(Granularity.Day, 60).Result;
-            var dimensioned = Top.Ranking.GetTops(Granularity.Day, 60, dimension: Constants.DefaultDimension).Result;
+            var overall = Top.Ranking.AllAsync(Granularity.Day, 60).Result;
+            var dimensioned = Top.Ranking.AllAsync(Granularity.Day, 60, dimension: Constants.DefaultDimension).Result;
 
             Assert.IsNotNull(overall);
             Assert.IsNotNull(dimensioned);
@@ -142,8 +142,8 @@ namespace Toppler.Tests.Integration
                 Top.Counter.HitAsync(this.TestEventSources, 1, new string[] { this.TestDimension}, now.AddMinutes(item) );
             }
 
-            var overall = Top.Ranking.GetOverallTops(Granularity.Day, 60).Result;
-            var dimensioned = Top.Ranking.GetTops(Granularity.Day, 60, dimension: this.TestDimension).Result;
+            var overall = Top.Ranking.AllAsync(Granularity.Day, 60).Result;
+            var dimensioned = Top.Ranking.AllAsync(Granularity.Day, 60, dimension: this.TestDimension).Result;
 
             Assert.IsNotNull(overall);
             Assert.IsNotNull(dimensioned);
@@ -184,7 +184,7 @@ namespace Toppler.Tests.Integration
             }
 
             //all contexts
-            var alltops = Top.Ranking.GetOverallTops(Granularity.Day, 1, current).Result;
+            var alltops = Top.Ranking.AllAsync(Granularity.Day, 1, current).Result;
             Assert.AreEqual(3, alltops.Count());
             foreach (var eventSource in this.TestEventSources)
             {
@@ -194,7 +194,7 @@ namespace Toppler.Tests.Integration
             }      
 
             //v1
-            var topsv1 = Top.Ranking.GetTops(Granularity.Day, 1, current, this.TestDimension + "-v1").Result;
+            var topsv1 = Top.Ranking.AllAsync(Granularity.Day, 1, current, this.TestDimension + "-v1").Result;
             Assert.AreEqual(3, topsv1.Count());
             foreach (var eventSource in this.TestEventSources)
             {
@@ -204,7 +204,7 @@ namespace Toppler.Tests.Integration
             }
 
             ////v2
-            var topsv2 = Top.Ranking.GetTops(Granularity.Day, 1, current, this.TestDimension + "-v2").Result;
+            var topsv2 = Top.Ranking.AllAsync(Granularity.Day, 1, current, this.TestDimension + "-v2").Result;
             Assert.AreEqual(3, topsv2.Count());
             foreach (var eventSource in this.TestEventSources)
             {
@@ -214,7 +214,7 @@ namespace Toppler.Tests.Integration
             }
 
             ////v3
-            var topsv3 = Top.Ranking.GetTops(Granularity.Day, 1, current, this.TestDimension + "-v3").Result;
+            var topsv3 = Top.Ranking.AllAsync(Granularity.Day, 1, current, this.TestDimension + "-v3").Result;
             Assert.AreEqual(3, topsv3.Count());
             foreach (var eventSource in this.TestEventSources)
             {

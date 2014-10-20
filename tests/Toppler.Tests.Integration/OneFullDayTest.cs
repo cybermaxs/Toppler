@@ -41,25 +41,25 @@ namespace Toppler.Tests.Integration
             }
 
             //seconds
-            var secs = Top.Ranking.GetTops(Granularity.Second, 60, current, this.TestDimension).Result;
+            var secs = Top.Ranking.AllAsync(Granularity.Second, 60, current, this.TestDimension).Result;
             Assert.AreEqual(1, secs.Count());
             Assert.AreEqual(this.TestEventSource, secs.First().EventSource);
             Assert.AreEqual(60, secs.First().Score);
 
             //minutes
-            var mins = Top.Ranking.GetTops(Granularity.Minute, 60,  current, this.TestDimension).Result;
+            var mins = Top.Ranking.AllAsync(Granularity.Minute, 60,  current, this.TestDimension).Result;
             Assert.AreEqual(1, mins.Count());
             Assert.AreEqual(this.TestEventSource, mins.First().EventSource);
             Assert.AreEqual(3600, mins.First().Score);
 
             //hours
-            var hours = Top.Ranking.GetTops(Granularity.Hour, 24,  current, this.TestDimension).Result;
+            var hours = Top.Ranking.AllAsync(Granularity.Hour, 24,  current, this.TestDimension).Result;
             Assert.AreEqual(1, hours.Count());
             Assert.AreEqual(this.TestEventSource, hours.First().EventSource);
             Assert.AreEqual(86400, hours.First().Score);
 
             //days
-            var days = Top.Ranking.GetTops(Granularity.Day, 1, current, this.TestDimension).Result;
+            var days = Top.Ranking.AllAsync(Granularity.Day, 1, current, this.TestDimension).Result;
             Assert.AreEqual(1, days.Count());
             Assert.AreEqual(this.TestEventSource, days.First().EventSource);
             Assert.AreEqual(86400, days.First().Score);
@@ -80,24 +80,24 @@ namespace Toppler.Tests.Integration
             }
 
             //last minute
-            var lastmin_bysecs = Top.Ranking.GetTops(Granularity.Second, 60,  current, this.TestDimension).Result;
-            var lastmin_bymins = Top.Ranking.GetTops(Granularity.Minute, 1,  current, this.TestDimension).Result;
+            var lastmin_bysecs = Top.Ranking.AllAsync(Granularity.Second, 60,  current, this.TestDimension).Result;
+            var lastmin_bymins = Top.Ranking.AllAsync(Granularity.Minute, 1,  current, this.TestDimension).Result;
 
             Assert.AreEqual(lastmin_bymins.Count(), lastmin_bysecs.Count());
             Assert.AreEqual(lastmin_bymins.First().EventSource, lastmin_bysecs.First().EventSource);
             Assert.AreEqual(lastmin_bymins.First().Score, lastmin_bysecs.First().Score);
 
             //last hour
-            var lasthour_bymins = Top.Ranking.GetTops(Granularity.Minute, 60,  current, this.TestDimension).Result;
-            var lasthour_byhours = Top.Ranking.GetTops(Granularity.Hour, 1,  current, this.TestDimension).Result;
+            var lasthour_bymins = Top.Ranking.AllAsync(Granularity.Minute, 60,  current, this.TestDimension).Result;
+            var lasthour_byhours = Top.Ranking.AllAsync(Granularity.Hour, 1,  current, this.TestDimension).Result;
 
             Assert.AreEqual(lasthour_bymins.Count(), lasthour_byhours.Count());
             Assert.AreEqual(lasthour_bymins.First().EventSource, lasthour_byhours.First().EventSource);
             Assert.AreEqual(lasthour_bymins.First().Score, lasthour_byhours.First().Score);
 
             //last day
-            var lastday_byhours = Top.Ranking.GetTops(Granularity.Hour, 24, current, this.TestDimension).Result;
-            var lastday_bydays = Top.Ranking.GetTops(Granularity.Day, 1, current, this.TestDimension).Result;
+            var lastday_byhours = Top.Ranking.AllAsync(Granularity.Hour, 24, current, this.TestDimension).Result;
+            var lastday_bydays = Top.Ranking.AllAsync(Granularity.Day, 1, current, this.TestDimension).Result;
 
             Assert.AreEqual(lastday_byhours.Count(), lastday_bydays.Count());
             Assert.AreEqual(lastday_byhours.First().EventSource, lastday_bydays.First().EventSource);

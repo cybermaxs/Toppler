@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Bootstrap 101 Template</title>
+    <title>Simple Rate Limiter example</title>
     <!-- Bootstrap -->
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
@@ -21,10 +21,15 @@
 </head>
 <body>
     <div class="container">
-        <h1>Simple Rate Limiter example</h1>
-        <div class="separator"></div>
-        <input id="btn" type="button" value="Start/Stop" />
-        <div id="log" class="well"></div>
+        <div class="row">
+            <h1>Simple Rate Limiter example</h1>
+            <div class="row">
+                <input id="btn" type="button" value="Start/Stop" />
+                <div id="log" class="well"></div>
+            </div>
+        </div>
+
+
     </div>
 
 
@@ -54,7 +59,7 @@
 
         var stop = function () {
             clearInterval(timer);
-            timer=null;
+            timer = null;
         };
 
         $("#btn").click(function () {

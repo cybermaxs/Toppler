@@ -24,7 +24,7 @@ namespace Toppler.Tests.Unit.Api
         [ExpectedException(typeof(InvalidOperationException))]
         public void Leaderboard_WhenNoSetup_ShouldThrowException()
         {
-            Top.Ranking.GetOverallTops(Granularity.Day, 1);
+            Top.Ranking.AllAsync(Granularity.Day, 1);
         }
 
         //[TestMethod]
