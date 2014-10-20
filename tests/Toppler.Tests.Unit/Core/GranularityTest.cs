@@ -11,6 +11,7 @@ namespace Toppler.Tests.Unit.Core
     public class GranularityTest
     {
         private Granularity fakeGranularity = new Granularity("fake", 100, 456, 10);
+
         #region Arguments
         [TestMethod]
         [ExpectedException(typeof(InvalidOperationException))]
@@ -32,8 +33,6 @@ namespace Toppler.Tests.Unit.Core
         public void BuildMap_WhenSame_ShouldReturnAsingleElement()
         {
             var map = fakeGranularity.BuildMap(fakeGranularity.Factor * fakeGranularity.Size, fakeGranularity.Factor * fakeGranularity.Size);
-
-
 
             Assert.IsNotNull(map);
             Assert.AreEqual(1, map.Count);
@@ -88,6 +87,29 @@ namespace Toppler.Tests.Unit.Core
             //values
             Assert.AreEqual(start, map.First().Value);
            
+        }
+        #endregion
+
+        #region Day
+        [TestMethod]
+        public void BuildFlatMapForDays_WhenSame_ShouldReturnThisDay()
+        {
+            var map = Granularity.Day.BuildFlatMap(DateTime.UtcNow, 0);
+
+            Assert.IsNotNull(map);
+            Assert.AreEqual(1, map.Count);
+            Assert.AreEqual(DateTime.UtcNow.Date.ToSecondsTimestamp(), map.First().Value);
+        }
+
+        [TestMethod]
+        public void BuildFlatMapForDays_WhenSame_ShouldReturnTwoDays()
+        {
+            var map = Granularity.Day.BuildFlatMap(DateTime.UtcNow, 1);
+
+            Assert.IsNotNull(map);
+            Assert.AreEqual(2, map.Count);
+            Assert.AreEqual(DateTime.UtcNow.Date.AddDays(-1).ToSecondsTimestamp(), map.First().Value);
+            Assert.AreEqual(DateTime.UtcNow.Date.ToSecondsTimestamp(), map.Skip(1).First().Value);
         }
         #endregion
     }

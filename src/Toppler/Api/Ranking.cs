@@ -28,7 +28,7 @@ namespace Toppler.Api
             this.DB = this.redisConnection.GetDatabase(context.DbIndex);
         }
 
-        public async Task<IEnumerable<TopResult>> AllAsync(Granularity granularity, int range = 1, DateTime? from = null, string[] dimensions = null, RankingOptions options = null)
+        public async Task<IEnumerable<TopResult>> AllAsync(Granularity granularity, int range = 0, DateTime? from = null, string[] dimensions = null, RankingOptions options = null)
         {
             options = options ?? new RankingOptions();
             var cacheKey = await ComputeAggregationAsync(granularity, range, from, dimensions, options);
@@ -40,7 +40,7 @@ namespace Toppler.Api
             });
         }
 
-        public async Task<TopResult> DetailsAsync(string eventSource, Granularity granularity, int range = 1, DateTime? from = null, string[] dimensions = null, RankingOptions options = null)
+        public async Task<TopResult> DetailsAsync(string eventSource, Granularity granularity, int range = 0, DateTime? from = null, string[] dimensions = null, RankingOptions options = null)
         {
             options = options ?? new RankingOptions();
             var cacheKey = await ComputeAggregationAsync(granularity, range, from, dimensions, options);
@@ -52,7 +52,7 @@ namespace Toppler.Api
         }
 
         #region Private methods
-        private async Task<string> ComputeAggregationAsync(Granularity granularity, int range = 1, DateTime? from = null, string[] dimensions = null, RankingOptions options = null)
+        private async Task<string> ComputeAggregationAsync(Granularity granularity, int range = 0, DateTime? from = null, string[] dimensions = null, RankingOptions options = null)
         {
             var allkeys = await this.GetKeysAsync(this.DB, granularity, range, from, dimensions);
 
@@ -89,13 +89,10 @@ namespace Toppler.Api
                 dimensions = values.Select(s => s.ToString()).ToArray();
             }
 
-            var toInSeconds = (from ?? DateTime.UtcNow).ToRoundedTimestamp(granularity.Factor);
-            var fromInSeconds = toInSeconds - range * granularity.Factor;
-
             var allkeys = new List<RedisKey>();
-            foreach (var kvp in granularity.BuildFlatMap(fromInSeconds, toInSeconds))
+            foreach (var kvp in granularity.BuildFlatMap(from, range))
             {
-                for (var d = 0; d <= dimensions.Length; d++ )
+                for (var d = 0; d < dimensions.Length; d++ )
                 {
                     allkeys.Add(this.context.KeyFactory.NsKey(dimensions[d], granularity.Name, kvp.Key.ToString(), kvp.Value.ToString()));
                 }                      

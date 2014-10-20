@@ -11,11 +11,10 @@
     <licenseUrl>https://raw.githubusercontent.com/Cybermaxs/Toppler/master/LICENSE</licenseUrl>
     <description>Minimalist Libray to manage Leaderboards and Top(N) use cases</description>
     <summary>A redis Ranking and Leaderboard Library</summary>
-    <!--<releaseNotes>v 1.0.0.0 - Initial Release</releaseNotes>-->
     <copyright>Copyright 2014</copyright>
     <tags>Redis Leaderboard TopN Ranking Leaderboard</tags>
     <dependencies>
-      <dependency id="StackExchange.Redis" version="1.0.322" />
+      <dependency id="StackExchange.Redis" version="1.0.333" />
     </dependencies>
   </metadata>
   <files>

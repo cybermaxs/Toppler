@@ -15,9 +15,10 @@ TODO
 ## Use Cases
 
 1. Counting stuff
-2. Leaderboards & Rankings with Custom Time Ranges (Second, Minute, Hour, Day)
-3. Very Basic Recommendation system (mixing random & topN values)
-4. Rate limiter with a sliding time range
+2. Leaderboards & Ranking tables with Custom Time Ranges (Second, Minute, Hour, Day)
+3. Very Basic Recommendation system (mixing random & popular values)
+4. Rate limiter with a fixed/sliding time range (last N minutes)
+5. 
 
 
 # Show me the code !
@@ -32,14 +33,18 @@ Note : additional parameters are available for advanced usage.
 
 ## Step 2 : Add hit(s) (when something interesing happened)
 ```csharp
-    TopplerClient.Counter.HitAsync("myevent");
+    //somewhere
+    Top.Counter.HitAsync("myevent");
+    //elsewhere
+    Top.Counter.HitAsync("myevent");
 ```
 
 
 ## Step 3 : Get Top events
 ```csharp
-TopplerClient.Ranking.GetOverallTops(Granularity.Day);
-//returns "myevent", 1
+//get all for the current day
+var tops = await Top.Ranking.AllAsync(Granularity.Day);
+//returns "myevent", 2
 ```
 
 That'all ! Many additional options are available to manage granularities, resolutions, contexts, ... Read the wiki (Coming soon)

@@ -35,7 +35,7 @@ namespace Toppler.Extensions
         /// <param name="date"></param>
         /// <param name="precision"></param>
         /// <returns></returns>
-        public static long ToRoundedTimestamp(this DateTime date, long precision)
+        public static long ToRoundedTimestamp(this DateTime date, int precision)
         {
             return ((long)date.ToSecondsTimestamp() / precision) * precision;
         }

@@ -82,6 +82,26 @@ namespace Toppler.Core
             return map;
         }
 
+        public IList<KeyValuePair<long, long>> BuildFlatMap(DateTime? start, int range)
+        {
+            var to = (start ?? DateTime.UtcNow).ToRoundedTimestamp(this.Factor);
+            var from = to - range * this.Factor;
+
+            if (from > to)
+                throw new InvalidOperationException("invalid time range (from>to)");
+
+            var map = new List<KeyValuePair<long, long>>();
+            var ts = from;
+            while (ts <= to)
+            {
+                var tsround = ts.ToRoundedTimestamp(this.Factor * this.Size);
+                map.Add(new KeyValuePair<long, long>(tsround, ts));
+
+                ts += this.Factor;
+            }
+            return map;
+        }
+
         //default granularities
         public static readonly Granularity Second = new Granularity("Second", 3600, 7200, 1);
         public static readonly Granularity Minute = new Granularity("Minute", 1440, 172800, 60);
