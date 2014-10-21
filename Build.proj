@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="BuildKit"
+         xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  
+  <Import Project="C:\Program Files\MSBuild\ExtensionPack\4.0\MSBuild.ExtensionPack.VersionNumber.targets"/>
+  <Import Project=".build\MSBuild.Community.Tasks.Targets" />
+
+  <Target Name="UpdateNuspec">
+    <Message Text="Nuspecing..." />
+    <GetAssemblyIdentity AssemblyFiles="src\Toppler\bin\Release\Toppler.dll">
+      <Output TaskParameter="Assemblies" ItemName="MyAssemblyInfo"/>
+    </GetAssemblyIdentity>
+    <XmlUpdate
+
+        XmlFileName="Toppler.nuspec"
+        XPath="package/metadata/version"
+        Value="%(MyAssemblyInfo.Version)"/>
+  </Target>
+
+  <Target Name="Versioning">
+    <Message Text="Versioning..." />
+    <ItemGroup>
+      <AssemblyInfoFiles Include="src\Toppler\Properties\AssemblyInfo.cs"/>
+    </ItemGroup>
+    <MSBuild.ExtensionPack.Framework.AssemblyInfo AssemblyInfoFiles="@(AssemblyInfoFiles)"
+                                                  AssemblyRevisionType="AutoIncrement" 
+                                                  AssemblyFileRevisionType="AutoIncrement" 
+                                                  AssemblyBuildNumberType="YearWeekDay"
+                                                  AssemblyFileBuildNumberType="YearWeekDay"/>
+  </Target>
+
+  <Target Name="BuildKit" DependsOnTargets="Versioning">
+    <Message Text="Building..." />
+    <MSBuild Projects="src\Toppler\Toppler.csproj" Properties="Configuration=Release"/>
+    <MSBuild Projects="src\Toppler_Net40\Toppler_Net40.csproj" Properties="Configuration=Release"/>
+    <CallTarget Targets="UpdateNuspec"></CallTarget>
+  </Target>
+</Project>

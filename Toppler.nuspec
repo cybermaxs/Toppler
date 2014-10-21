@@ -1,8 +1,8 @@
-<?xml version="1.0"?>
-<package >
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package>
   <metadata>
     <id>Toppler</id>
-    <version>$version$</version>
+    <version>0.0.14432.16</version>
     <title>Toppler</title>
     <authors>Cybermaxs</authors>
     <owners>Cybermaxs</owners>
@@ -14,17 +14,19 @@
     <copyright>Copyright 2014</copyright>
     <tags>Redis Leaderboard TopN Ranking Leaderboard</tags>
     <dependencies>
-      <dependency id="StackExchange.Redis" version="1.0.333" />
       <group targetFramework="net40">
-        <dependency id="Microsoft.Bcl" version="1.1.9"/>
-        <dependency id="Microsoft.Bcl.Async" version="1.0.168"/>
-        <dependency id="Microsoft.Bcl.Build" version="1.0.14"/>
+        <dependency id="StackExchange.Redis" version="1.0.333" />
+        <dependency id="Microsoft.Bcl" version="1.1.9" />
+        <dependency id="Microsoft.Bcl.Async" version="1.0.168" />
+        <dependency id="Microsoft.Bcl.Build" version="1.0.14" />
       </group>
       <group targetFramework="net45">
+        <dependency id="StackExchange.Redis" version="1.0.333" />
       </group>
     </dependencies>
   </metadata>
   <files>
-    <file src="bin\Release\Toppler*.*" target="lib\net45" />
+    <file src="src\Toppler\bin\Release\Toppler.dll" target="lib\net45" />
+    <file src="src\Toppler_Net40\bin\Release\Toppler.dll" target="lib\net40" />
   </files>
 </package>

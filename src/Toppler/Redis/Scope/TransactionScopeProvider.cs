@@ -2,6 +2,7 @@
 using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using Toppler.Helpers;
 
 namespace Toppler.Redis.Scope
 {
@@ -30,7 +31,7 @@ namespace Toppler.Redis.Scope
             catch (Exception ex)
             {
                 Trace.TraceError("failed to invoke batch. Reason :" + ex.Message);
-                return Task.FromResult(false);
+                return TaskHelper.AlwaysFalse;
             }
         }
     }
