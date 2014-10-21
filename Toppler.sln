@@ -21,6 +21,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{BF6464
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Toppler.Sample.RateLimiter", "samples\Toppler.Sample.RateLimiter\Toppler.Sample.RateLimiter.csproj", "{D281F404-B2B7-408A-977A-1A01AA7C37F4}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{DE4441DF-950A-41C9-AE71-F7B2D205572D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -48,6 +50,7 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
+		{734D0A33-8A6C-4163-A877-50309FB5FE19} = {DE4441DF-950A-41C9-AE71-F7B2D205572D}
 		{EC27CD1C-2CCE-4B5C-88FF-39C4F0B6A188} = {9945A941-F557-4B2C-9E6D-4E3F921EA70E}
 		{0AAFA1AE-A0EF-4E6E-8536-7AD85A15DB2A} = {9945A941-F557-4B2C-9E6D-4E3F921EA70E}
 		{D281F404-B2B7-408A-977A-1A01AA7C37F4} = {7B78B802-7D2B-487A-8AB3-C70C969C3D11}
