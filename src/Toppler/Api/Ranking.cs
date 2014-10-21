@@ -31,9 +31,9 @@ namespace Toppler.Api
         public async Task<IEnumerable<TopResult>> AllAsync(Granularity granularity, int range = 0, DateTime? from = null, string[] dimensions = null, RankingOptions options = null)
         {
             options = options ?? new RankingOptions();
-            var cacheKey = await ComputeAggregationAsync(granularity, range, from, dimensions, options);
+            var cacheKey = await ComputeAggregationAsync(granularity, range, from, dimensions, options).ConfigureAwait(false);
 
-            var entries = await this.DB.SortedSetRangeByRankWithScoresAsync(cacheKey, 0, options.TopN, Order.Descending);
+            var entries = await this.DB.SortedSetRangeByRankWithScoresAsync(cacheKey, 0, options.TopN, Order.Descending).ConfigureAwait(false);
             return entries.Select((e, i) =>
             {
                 return new TopResult(e.Element, e.Score, i + 1);
@@ -43,10 +43,10 @@ namespace Toppler.Api
         public async Task<TopResult> DetailsAsync(string eventSource, Granularity granularity, int range = 0, DateTime? from = null, string[] dimensions = null, RankingOptions options = null)
         {
             options = options ?? new RankingOptions();
-            var cacheKey = await ComputeAggregationAsync(granularity, range, from, dimensions, options);
+            var cacheKey = await ComputeAggregationAsync(granularity, range, from, dimensions, options).ConfigureAwait(false);
 
-            var rank = await DB.SortedSetRankAsync(cacheKey, eventSource, Order.Descending);
-            var score = await DB.SortedSetScoreAsync(cacheKey, eventSource);
+            var rank = await DB.SortedSetRankAsync(cacheKey, eventSource, Order.Descending).ConfigureAwait(false);
+            var score = await DB.SortedSetScoreAsync(cacheKey, eventSource).ConfigureAwait(false);
 
             return new TopResult(eventSource, score, rank+1);
         }
@@ -54,7 +54,7 @@ namespace Toppler.Api
         #region Private methods
         private async Task<string> ComputeAggregationAsync(Granularity granularity, int range = 0, DateTime? from = null, string[] dimensions = null, RankingOptions options = null)
         {
-            var allkeys = await this.GetKeysAsync(this.DB, granularity, range, from, dimensions);
+            var allkeys = await this.GetKeysAsync(this.DB, granularity, range, from, dimensions).ConfigureAwait(false);
 
             var allweights = new List<double>();
             for (var k = 0; k < allkeys.Length; k++)
@@ -67,15 +67,15 @@ namespace Toppler.Api
             if (options.CacheDuration.HasValue && options.CacheDuration.Value != TimeSpan.Zero)
             {
                 //use cache
-                bool exists = await this.DB.KeyExistsAsync(cacheKey);
+                bool exists = await this.DB.KeyExistsAsync(cacheKey).ConfigureAwait(false);
                 if (!exists)
                 {
-                    await this.DB.SortedSetCombineAndStoreAsync(SetOperation.Union, cacheKey, allkeys);
-                    await this.DB.KeyExpireAsync(cacheKey, DateTime.UtcNow.Add(options.CacheDuration.Value), CommandFlags.FireAndForget);
+                    await this.DB.SortedSetCombineAndStoreAsync(SetOperation.Union, cacheKey, allkeys).ConfigureAwait(false);
+                    await this.DB.KeyExpireAsync(cacheKey, DateTime.UtcNow.Add(options.CacheDuration.Value), CommandFlags.FireAndForget).ConfigureAwait(false);
                 }
             }
             else
-                await this.DB.SortedSetCombineAndStoreAsync(SetOperation.Union, cacheKey, allkeys, allweights.ToArray());
+                await this.DB.SortedSetCombineAndStoreAsync(SetOperation.Union, cacheKey, allkeys, allweights.ToArray()).ConfigureAwait(false);
 
             return cacheKey;
         }
@@ -85,7 +85,7 @@ namespace Toppler.Api
             if (dimensions == null || dimensions.Length==0)
             {
                 // dimensions is null => load all registered dimensions from DB
-                var values = await db.SetMembersAsync(this.context.KeyFactory.NsKey(Constants.SetAllDimensions));
+                var values = await db.SetMembersAsync(this.context.KeyFactory.NsKey(Constants.SetAllDimensions)).ConfigureAwait(false);
                 dimensions = values.Select(s => s.ToString()).ToArray();
             }
 
