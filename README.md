@@ -14,18 +14,17 @@ TODO
 
 ## Use Cases
 
-1. Counting stuff
+1. Counting stuff ( in a Distributed environnment)
 2. Leaderboards & Ranking tables with Custom Time Ranges (Second, Minute, Hour, Day)
 3. Very Basic Recommendation system (mixing random & popular values)
-4. Rate limiter with a fixed/sliding time range (last N minutes)
-5. 
+4. Rate limiter with a fixed/sliding time range (eg last N minutes, last N seconds, ...)
 
 
 # Show me the code !
 
 ##Step 1 : Setup Redis connection & Toppler Settings
 ```csharp
-    TopplerClient.Setup(redisConfiguration: "localhost:6379");
+    Top.Setup(redisConfiguration: "localhost:6379");
 ```
 the string parameter is the redis configuration for SE.Redis Read more on available options [here](https://github.com/StackExchange/StackExchange.Redis/blob/master/Docs/Configuration.md)
 
@@ -39,7 +38,6 @@ Note : additional parameters are available for advanced usage.
     Top.Counter.HitAsync("myevent");
 ```
 
-
 ## Step 3 : Get Top events
 ```csharp
 //get all for the current day
@@ -47,7 +45,7 @@ var tops = await Top.Ranking.AllAsync(Granularity.Day);
 //returns "myevent", 2
 ```
 
-That'all ! Many additional options are available to manage granularities, resolutions, contexts, ... Read the wiki (Coming soon)
+That'all ! Many additional options are available to manage granularities, resolutions, contexts, ... Read the wiki (Coming soon).
 
 # Acknowledgements
 + Salvatore Sanfilippo (@antirez) : Creator of Redis
