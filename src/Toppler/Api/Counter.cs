@@ -33,7 +33,7 @@ namespace Toppler.Api
 
         public Task<bool> HitAsync(string[] eventSources, long hits = 1, string[] dimensions = null, DateTime? occurred = null)
         {
-            if (eventSources == null || eventSources.Length==0)
+            if (eventSources == null || eventSources.Length == 0)
             {
                 Trace.TraceWarning("HitAsync Failed because eventSources is null or empty.");
                 return TaskHelper.AlwaysFalse;
@@ -57,17 +57,16 @@ namespace Toppler.Api
                 dimensions = dimensions == null || dimensions.Length == 0 ? new string[] { Constants.DefaultDimension } : dimensions;
 
                 // tracks all contexts : used for mixed results
-                db.SetAddAsync(this.context.KeyFactory.NsKey(Constants.SetAllDimensions), dimensions.Select(d=>(RedisValue)d).ToArray());
+                db.SetAddAsync(this.context.KeyFactory.NsKey(Constants.SetAllDimensions), dimensions.Select(d => (RedisValue)d).ToArray());
 
-                for (var d = 0; d < dimensions.Length; d++)
+                for (var g = 0; g < this.context.Granularities.Length; g++)
                 {
-                    for (var g = 0; g < this.context.Granularities.Length; g++)
-                    {
-                        var granularity = context.Granularities[g];
-                        var tsround = now.ToRoundedTimestamp(granularity.Size * granularity.Factor);
-                        var ts = now.ToRoundedTimestamp(granularity.Factor);
+                    var granularity = context.Granularities[g];
+                    var ts = now.ToRoundedTimestamp(granularity.Factor);
 
-                        var key = this.context.KeyFactory.NsKey(dimensions[d], granularity.Name, tsround.ToString(), ts.ToString());
+                    for (var d = 0; d < dimensions.Length; d++)
+                    {
+                        var key = this.context.KeyFactory.NsKey(dimensions[d], granularity.Name, ts.ToString());
 
                         foreach (var eventSource in eventSources)
                         {

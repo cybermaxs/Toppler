@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Toppler.Core;
-using Toppler.Extensions;
 using Toppler.Redis;
 
 namespace Toppler.Api
@@ -90,11 +89,11 @@ namespace Toppler.Api
             }
 
             var allkeys = new List<RedisKey>();
-            foreach (var kvp in granularity.BuildFlatMap(from, range))
+            foreach (var ts in granularity.BuildFlatMap(from, range))
             {
                 for (var d = 0; d < dimensions.Length; d++ )
                 {
-                    allkeys.Add(this.context.KeyFactory.NsKey(dimensions[d], granularity.Name, kvp.Key.ToString(), kvp.Value.ToString()));
+                    allkeys.Add(this.context.KeyFactory.NsKey(dimensions[d], granularity.Name, ts.ToString()));
                 }                      
             }
 

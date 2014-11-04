@@ -43,10 +43,10 @@ namespace Toppler.Api
                 var fromInSeconds = granularity.GetMinSecondsTimestamp(now).ToRoundedTimestamp(granularity.Factor * granularity.Size);
 
                 var allkeys = new List<RedisKey>();
-                foreach (var kvp in granularity.BuildFlatMap(fromInSeconds, toInSeconds))
+                foreach (var ts in granularity.BuildFlatMap(fromInSeconds, toInSeconds))
                 {
                     foreach (var context in dimensions)
-                        allkeys.Add(this.context.KeyFactory.NsKey(context, granularity.Name, kvp.Key.ToString(), kvp.Value.ToString()));
+                        allkeys.Add(this.context.KeyFactory.NsKey(context, granularity.Name, ts.ToString()));
                 }
 
                 await this.DB.KeyDeleteAsync(allkeys.ToArray(), CommandFlags.FireAndForget);
