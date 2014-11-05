@@ -1,6 +1,4 @@
-﻿using StackExchange.Redis;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using Toppler.Extensions;
 
 namespace Toppler.Core
@@ -8,14 +6,12 @@ namespace Toppler.Core
     public class Granularity
     {
         public string Name;
-        public int Size;
         public int Ttl;
         public int Factor;
 
-        public Granularity(string name, int size = 1, int ttl = 60, int factor = 1)
+        public Granularity(string name, int ttl = 60, int factor = 1)
         {
             this.Name = name.ToLower();
-            this.Size = size;
             this.Ttl = ttl;
             this.Factor = factor;
         }
@@ -27,7 +23,7 @@ namespace Toppler.Core
         /// <returns></returns>
         public long GetMinSecondsTimestamp(DateTime? dt = null)
         {
-            return (dt ?? DateTime.UtcNow).ToRoundedTimestamp(this.Factor * this.Size) - this.Ttl;
+            return (dt ?? DateTime.UtcNow).ToRoundedTimestamp(this.Factor) - this.Ttl;
         }
 
         /// <summary>
@@ -79,10 +75,9 @@ namespace Toppler.Core
         }
 
         //default granularities
-        public static readonly Granularity Second = new Granularity("Second", 3600, 7200, 1);
-        public static readonly Granularity Minute = new Granularity("Minute", 1440, 172800, 60);
-        public static readonly Granularity Hour = new Granularity("Hour", 168, 1209600, 3600);
-        public static readonly Granularity Day = new Granularity("Day", 365, 63113880, 86400);
-
+        public static readonly Granularity Second = new Granularity("Second", 7200, 1);
+        public static readonly Granularity Minute = new Granularity("Minute", 172800, 60);
+        public static readonly Granularity Hour = new Granularity("Hour", 1209600, 3600);
+        public static readonly Granularity Day = new Granularity("Day", 5184000, 86400);
     }
 }

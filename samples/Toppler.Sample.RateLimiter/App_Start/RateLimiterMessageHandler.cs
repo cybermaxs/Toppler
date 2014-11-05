@@ -39,9 +39,6 @@ namespace Toppler.Sample.RateLimiter.App_Start
                 await Top.Counter.HitAsync(new string[] { IP }, 1L, new string[] { path });
                 return new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent("Current Rate Limit : " + IP + "=>" + rate.Score) };
             }
-
-            
-            return await base.SendAsync(request, cancellationToken);
         }
     }
 }

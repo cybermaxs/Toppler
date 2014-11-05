@@ -12,7 +12,7 @@ namespace Toppler.Tests.Unit.Core
         public void DefaultGranularityProvider_WhenCtor_ShouldReturn4Granularities()
         {
             var provider = new DefaultGranularityProvider();
-            Assert.AreEqual(4, provider.GetGranularities().Count());
+            Assert.AreEqual(5, provider.GetGranularities().Count());
         }
 
 
@@ -20,7 +20,7 @@ namespace Toppler.Tests.Unit.Core
         public void DefaultGranularityProvider_WhenRegister_ShouldBeAdded()
         {
             var provider = new DefaultGranularityProvider();
-            Granularity newgran = new Granularity("test");
+            Granularity newgran = new Granularity("test") { Factor = 45656 };
             var res = provider.RegisterGranularity(newgran);
             Assert.IsTrue(res);
             Assert.IsTrue(provider.GetGranularities().Contains(newgran));
@@ -30,7 +30,7 @@ namespace Toppler.Tests.Unit.Core
         public void DefaultGranularityProvider_WhenDuplicates_ShouldNotBeAdded()
         {
             var provider = new DefaultGranularityProvider();
-            Granularity newgran = new Granularity("test");
+            Granularity newgran = new Granularity("test") { Factor = 7987654 };
             var res1 = provider.RegisterGranularity(newgran);
             var res2 = provider.RegisterGranularity(newgran);
             Assert.IsTrue(res1);
@@ -42,7 +42,7 @@ namespace Toppler.Tests.Unit.Core
         public void DefaultGranularityProvider_WhenInvalidGranularity_ShouldThrowException()
         {
             var provider = new DefaultGranularityProvider();
-            Granularity newgran = new Granularity("test", 0, 0, 0);
+            Granularity newgran = new Granularity("test", 0, 0);
             provider.RegisterGranularity(newgran);
         }
 

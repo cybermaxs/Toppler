@@ -10,7 +10,7 @@ namespace Toppler.Tests.Unit.Core
     [TestClass]
     public class GranularityTest
     {
-        private Granularity fakeGranularity = new Granularity("fake", 100, 456, 10);
+        private Granularity fakeGranularity = new Granularity("fake", 456, 10);
 
         #region Arguments
 
@@ -27,11 +27,11 @@ namespace Toppler.Tests.Unit.Core
         [TestMethod]
         public void BuildFlatMap_WhenSame_ShouldReturnAsingleElement()
         {
-            var map = fakeGranularity.BuildFlatMap(fakeGranularity.Factor * fakeGranularity.Size, fakeGranularity.Factor * fakeGranularity.Size);
+            var map = fakeGranularity.BuildFlatMap(fakeGranularity.Factor, fakeGranularity.Factor);
 
             Assert.IsNotNull(map);
             Assert.AreEqual(1, map.Length);
-            Assert.AreEqual(fakeGranularity.Factor * fakeGranularity.Size, map.First());
+            Assert.AreEqual(fakeGranularity.Factor, map.First());
         }
         #endregion
 
@@ -40,12 +40,12 @@ namespace Toppler.Tests.Unit.Core
         [TestMethod]
         public void BuildFlatMap_WhenMultiples_ShouldReturnASingleElement()
         {
-            var start = fakeGranularity.Size * fakeGranularity.Factor;
+            var start = fakeGranularity.Factor;
 
             var map = fakeGranularity.BuildFlatMap(start, 3 * start);
 
             Assert.IsNotNull(map);
-            Assert.AreEqual((2 * start)/fakeGranularity.Size*fakeGranularity.Factor, map.Length);
+            Assert.AreEqual((2 * start)/fakeGranularity.Factor, map.Length);
 
             //values
             Assert.AreEqual(start, map.First());

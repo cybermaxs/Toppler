@@ -40,7 +40,7 @@ namespace Toppler.Api
             foreach (var granularity in this.context.Granularities)
             {
                 var toInSeconds = now.ToRoundedTimestamp(granularity.Factor);
-                var fromInSeconds = granularity.GetMinSecondsTimestamp(now).ToRoundedTimestamp(granularity.Factor * granularity.Size);
+                var fromInSeconds = granularity.GetMinSecondsTimestamp(now);
 
                 var allkeys = new List<RedisKey>();
                 foreach (var ts in granularity.BuildFlatMap(fromInSeconds, toInSeconds))

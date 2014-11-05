@@ -15,6 +15,7 @@ namespace Toppler.Core
             this.Granularities.Add(Granularity.Minute);
             this.Granularities.Add(Granularity.Hour);
             this.Granularities.Add(Granularity.Day);
+            this.Granularities.Add(Granularity.AllTime);
         }
 
         public Granularity[] GetGranularities()
@@ -25,12 +26,12 @@ namespace Toppler.Core
 
         public bool RegisterGranularity(Granularity granularity)
         {
-            if (granularity.Size <= 0 || granularity.Ttl <= 0 || granularity.Factor <= 0 || string.IsNullOrEmpty(granularity.Name))
+            if (granularity.Ttl <= 0 || granularity.Factor <= 0 || string.IsNullOrEmpty(granularity.Name))
             {
                 throw new ArgumentException("granularity is not valid");
             }
 
-            if (this.Granularities.Exists(g => g.Factor == granularity.Factor && g.Size == granularity.Size))
+            if (this.Granularities.Exists(g => g.Factor == granularity.Factor))
             {
                 //throw new InvalidOperationException("a granularity with same factor & size is laready registered.");
                 return false;
