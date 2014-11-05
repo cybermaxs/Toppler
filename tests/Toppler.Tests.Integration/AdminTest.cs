@@ -49,7 +49,7 @@ namespace Toppler.Tests.Integration
 
         [TestMethod]
         [TestCategory("Integration")]
-        public void FlushOne_Dimension()
+        public void FlushOneDimension_OtherDimensionShouldNotBeAffected()
         {
             var tasks = new List<Task>();
             foreach (var i in Enumerable.Range(0, 20))

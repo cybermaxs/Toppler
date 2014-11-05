@@ -18,7 +18,7 @@ namespace Toppler.Tests.Integration.TestHelpers
 
             Top.Setup(redisConfiguration: "localhost:6379", 
               //  @namespace: "ns",
-                granularities: new Granularity[] { Granularity.Second, Granularity.Minute, Granularity.Hour, Granularity.Day });
+                granularities: new Granularity[] { Granularity.Second, Granularity.Minute, Granularity.Hour, Granularity.Day, Granularity.AllTime });
         }
 
         [AssemblyCleanup]

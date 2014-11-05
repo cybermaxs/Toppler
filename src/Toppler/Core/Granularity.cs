@@ -79,5 +79,6 @@ namespace Toppler.Core
         public static readonly Granularity Minute = new Granularity("Minute", 172800, 60);
         public static readonly Granularity Hour = new Granularity("Hour", 1209600, 3600);
         public static readonly Granularity Day = new Granularity("Day", 5184000, 86400);
+        public static readonly Granularity AllTime = new Granularity("AllTime", int.MaxValue, int.MaxValue);
     }
 }
