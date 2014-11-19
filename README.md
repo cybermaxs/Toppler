@@ -57,8 +57,8 @@ Licensed under the terms of the [MIT License](http://opensource.org/licenses/MIT
 
 Want to contribute ?
 ------------------
-Beginner => Download, Star, Comment/Tweet, Kudo, ...
-Amateur => Ask for help, send feature request, send bugs
-Pro => Pull request, promote
+- Beginner => Download, Star, Comment/Tweet, Kudo, ...
+- Amateur => Ask for help, send feature request, send bugs
+- Pro => Pull request, promote
 
 Thank you
