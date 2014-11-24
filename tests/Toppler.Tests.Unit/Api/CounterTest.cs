@@ -102,7 +102,51 @@ namespace Toppler.Tests.Unit.Api
             mockOfTransaction.Verify(b => b.KeyExpireAsync("ping:mycontext:second:"  +  ts, (ts + 7200).ToDateTime(), It.IsAny<CommandFlags>()), Times.Once);
             mockOfTransaction.Verify(b => b.KeyExpireAsync("ping:mycontext:minute:" +  ts_minute, (ts_minute + 172800).ToDateTime(), It.IsAny<CommandFlags>()), Times.Once);
             mockOfTransaction.Verify(b => b.KeyExpireAsync("ping:mycontext:hour:" +  ts_hour, (ts_hour + 1209600).ToDateTime(), It.IsAny<CommandFlags>()), Times.Once);
-            mockOfTransaction.Verify(b => b.KeyExpireAsync("ping:mycontext:day:"  +  ts_day, (ts_day + 63113880).ToDateTime(), It.IsAny<CommandFlags>()), Times.Once);
+            mockOfTransaction.Verify(b => b.KeyExpireAsync("ping:mycontext:day:" + ts_day, (ts_day + 5184000).ToDateTime(), It.IsAny<CommandFlags>()), Times.Once);
+        }
+
+        [TestMethod]
+        public void HitAsync_Default_WhenLocalGranularities_ShouldPass()
+        {
+            //basic setups
+            Mock<ITransaction> mockOfTransaction = new Mock<ITransaction>();
+            mockOfTransaction.Setup(b => b.SetAddAsync(It.IsAny<RedisKey>(), It.IsAny<RedisValue[]>(), It.IsAny<CommandFlags>())).ReturnsAsync(1);
+            mockOfTransaction.Setup(b => b.SortedSetIncrementAsync(It.IsAny<RedisKey>(), It.IsAny<RedisValue>(), It.IsAny<double>(), It.IsAny<CommandFlags>())).ReturnsAsync(0D);
+            mockOfTransaction.Setup(b => b.KeyExpireAsync(It.IsAny<RedisKey>(), It.IsAny<DateTime?>(), It.IsAny<CommandFlags>())).ReturnsAsync(true);
+            mockOfTransaction.Setup(b => b.ExecuteAsync(It.IsAny<CommandFlags>())).ReturnsAsync(true);
+
+            Mock<IDatabase> mockOfDatabase = new Mock<IDatabase>();
+            mockOfDatabase.Setup(m => m.CreateTransaction(It.IsAny<object>())).Returns(mockOfTransaction.Object);
+
+            Mock<IRedisConnection> mockOfConnectionProvider = new Mock<IRedisConnection>();
+            mockOfConnectionProvider.Setup(p => p.GetDatabase(It.IsAny<int>())).Returns(mockOfDatabase.Object);
+
+            //namespace is set to "ping"
+            ITopplerContext context = new TopplerContext("ping", Constants.DefaultRedisDb, new Granularity[] { Granularity.Second, Granularity.Minute, Granularity.Hour, Granularity.Day });
+
+            var api = new Counter(mockOfConnectionProvider.Object, context);
+
+            var ts = 405924910L; // approx. my birthday !
+            var dt = ts.ToDateTime();
+
+            var ts_day = 405907200L;
+
+            var execTask = api.HitAsync(new string[] { "pong" }, 10L, new string[] { "mycontext" }, ts.ToDateTime(), new Granularity[] { Granularity.Day, Granularity.AllTime});
+
+            Assert.IsNotNull(execTask);
+            Assert.IsTrue(execTask.Result);
+
+            mockOfTransaction.Verify(b => b.ExecuteAsync(It.IsAny<CommandFlags>()), Times.Once);
+            //set
+            mockOfTransaction.Verify(b => b.SetAddAsync("ping:" + Constants.SetAllDimensions, new RedisValue[] { "mycontext" }, It.IsAny<CommandFlags>()), Times.Once);
+
+            mockOfTransaction.Verify(b => b.SortedSetIncrementAsync(It.IsAny<RedisKey>(), It.IsAny<RedisValue>(), It.IsAny<double>(), It.IsAny<CommandFlags>()), Times.Exactly(2));
+            mockOfTransaction.Verify(b => b.SortedSetIncrementAsync("ping:mycontext:day:" + ts_day, "pong", 10D, It.IsAny<CommandFlags>()), Times.Once);
+            mockOfTransaction.Verify(b => b.SortedSetIncrementAsync("ping:mycontext:alltime:" + 0.ToString(), "pong", 10D, It.IsAny<CommandFlags>()), Times.Once);
+
+            mockOfTransaction.Verify(b => b.KeyExpireAsync(It.IsAny<RedisKey>(), It.IsAny<DateTime?>(), It.IsAny<CommandFlags>()), Times.Exactly(2));
+            mockOfTransaction.Verify(b => b.KeyExpireAsync("ping:mycontext:day:" + ts_day, (ts_day + 5184000).ToDateTime(), It.IsAny<CommandFlags>()), Times.Once);
+            mockOfTransaction.Verify(b => b.KeyExpireAsync("ping:mycontext:alltime:" + 0, ((long)int.MaxValue).ToDateTime(), It.IsAny<CommandFlags>()), Times.Once);
         }
     }
 }

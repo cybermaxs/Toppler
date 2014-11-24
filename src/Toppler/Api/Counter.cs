@@ -3,6 +3,7 @@ using System;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using Toppler.Core;
 using Toppler.Extensions;
 using Toppler.Helpers;
 using Toppler.Redis;
@@ -31,7 +32,7 @@ namespace Toppler.Api
             this.DB = this.redisConnection.GetDatabase(context.DbIndex);
         }
 
-        public Task<bool> HitAsync(string[] eventSources, long hits = 1, string[] dimensions = null, DateTime? occurred = null)
+        public Task<bool> HitAsync(string[] eventSources, long hits = 1, string[] dimensions = null, DateTime? occurred = null, Granularity[]  localGranularities=null)
         {
             if (eventSources == null || eventSources.Length == 0)
             {
@@ -59,9 +60,10 @@ namespace Toppler.Api
                 // tracks all contexts : used for mixed results
                 db.SetAddAsync(this.context.KeyFactory.NsKey(Constants.SetAllDimensions), dimensions.Select(d => (RedisValue)d).ToArray());
 
-                for (var g = 0; g < this.context.Granularities.Length; g++)
+                var granularities = localGranularities ?? this.context.Granularities;
+                for (var g = 0; g < granularities.Length; g++)
                 {
-                    var granularity = context.Granularities[g];
+                    var granularity = granularities[g];
                     var ts = now.ToRoundedTimestamp(granularity.Factor);
 
                     for (var d = 0; d < dimensions.Length; d++)
