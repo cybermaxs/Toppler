@@ -1,10 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="BuildKit"
+<Project DefaultTargets="Build"
          xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  
+  <PropertyGroup>
+    <MSBuildCommunityTasksPath>$(MSBuildProjectDirectory)\.build</MSBuildCommunityTasksPath>
+  </PropertyGroup>
   <Import Project="C:\Program Files\MSBuild\ExtensionPack\4.0\MSBuild.ExtensionPack.VersionNumber.targets"/>
-  <Import Project=".build\MSBuild.Community.Tasks.Targets" />
+  <Import Project="$(MSBuildCommunityTasksPath)\MSBuild.Community.Tasks.targets"/>
 
+  <PropertyGroup Condition=" '$(BuildConfiguration)' == '' ">
+    <BuildConfiguration>Release</BuildConfiguration>
+  </PropertyGroup>
+  
   <Target Name="UpdateNuspec">
     <Message Text="Nuspecing..." />
     <GetAssemblyIdentity AssemblyFiles="src\Toppler\bin\Release\Toppler.dll">
@@ -17,7 +23,11 @@
         Value="%(MyAssemblyInfo.Version)"/>
   </Target>
 
-  <Target Name="Versioning">
+  <Target Name="Clean">
+    <DeleteTree Directories="**\obj\**;**\bin\**" />
+  </Target>
+
+  <Target Name="Version">
     <Message Text="Versioning..." />
     <ItemGroup>
       <AssemblyInfoFiles Include="src\Toppler\Properties\AssemblyInfo.cs"/>
@@ -29,10 +39,27 @@
                                                   AssemblyFileBuildNumberType="YearWeekDay"/>
   </Target>
 
-  <Target Name="BuildKit" DependsOnTargets="Versioning">
-    <Message Text="Building..." />
-    <MSBuild Projects="src\Toppler\Toppler.csproj" Properties="Configuration=Release"/>
-    <MSBuild Projects="src\Toppler_Net40\Toppler_Net40.csproj" Properties="Configuration=Release"/>
-    <CallTarget Targets="UpdateNuspec"></CallTarget>
+  <Target Name="NugetPack">
+    <Message Text="packaging ..."/>
+    <NugetPack OutputDirectory="dist" ToolPath=".nuget"
+               File="Toppler.nuspec"/>
   </Target>
+
+  <!-- Projects to Build -->
+  <ItemGroup>
+    <ProjectFiles Include="$(MSBuildProjectDirectory)\**\*.sln">
+      <Properties>Configuration=$(BuildConfiguration)</Properties>
+    </ProjectFiles>
+  </ItemGroup>
+
+  <Target Name="Compile" DependsOnTargets="Clean;Version">
+    <MSBuild Projects="@(ProjectFiles)" />
+  </Target>
+
+  <Target Name="Build">
+    <CallTarget Targets="Compile" />
+    <CallTarget Targets="UpdateNuspec" />
+    <CallTarget Targets="NugetPack" />
+  </Target>
+  
 </Project>
