@@ -1,38 +1,27 @@
 ﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Toppler.Core;
+using Xunit;
 
 namespace Toppler.Tests.Unit.Api
 {
-    [TestClass]
     public class TopplerClientTest
     {
-        [TestMethod]
+        [Fact]
         public void TopplerClient_WhenNoSetup_ShouldNoBeConnected()
         {
-            Assert.IsFalse(Top.IsConnected);
+            Assert.False(Top.IsConnected);
         }
 
-        [TestMethod]
-        [ExpectedException(typeof(InvalidOperationException))]
+        [Fact]
         public void Counter_WhenNoSetup_ShouldThrowException()
         {
-            Top.Counter.HitAsync(new string[] { "blabla"});
+            Assert.Throws<InvalidOperationException>(() => { Top.Counter.HitAsync(new string[] { "blabla" }); });
         }
 
-        [TestMethod]
-        [ExpectedException(typeof(InvalidOperationException))]
+        [Fact]
         public void Leaderboard_WhenNoSetup_ShouldThrowException()
         {
-            Top.Ranking.AllAsync(Granularity.Day, 1);
+            Assert.Throws<InvalidOperationException>(() => { Top.Ranking.AllAsync(Granularity.Day, 1); });
         }
-
-        //[TestMethod]
-        //public void LeaderboardAndCounter_WhenSetup_ShouldBeValid()
-        //{
-        //    TopplerApi.Setup();
-        //    Assert.IsNotNull(TopplerApi.Counter);
-        //    Assert.IsNotNull(TopplerApi.Leaderboard);
-        //}
     }
 }

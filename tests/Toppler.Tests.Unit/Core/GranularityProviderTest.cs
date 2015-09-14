@@ -1,51 +1,47 @@
 ﻿using System;
 using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Toppler.Core;
+using Xunit;
 
 namespace Toppler.Tests.Unit.Core
 {
-    [TestClass]
     public class GranularityProviderTest
     {
-        [TestMethod]
+        [Fact]
         public void DefaultGranularityProvider_WhenCtor_ShouldReturn4Granularities()
         {
             var provider = new DefaultGranularityProvider();
-            Assert.AreEqual(5, provider.GetGranularities().Count());
+            Assert.Equal(5, provider.GetGranularities().Count());
         }
 
-
-        [TestMethod]
+        [Fact]
         public void DefaultGranularityProvider_WhenRegister_ShouldBeAdded()
         {
             var provider = new DefaultGranularityProvider();
-            Granularity newgran = new Granularity("test") { Factor = 45656 };
+            var newgran = new Granularity("test") { Factor = 45656 };
             var res = provider.RegisterGranularity(newgran);
-            Assert.IsTrue(res);
-            Assert.IsTrue(provider.GetGranularities().Contains(newgran));
+            Assert.True(res);
+            Assert.True(provider.GetGranularities().Contains(newgran));
         }
 
-        [TestMethod]
+        [Fact]
         public void DefaultGranularityProvider_WhenDuplicates_ShouldNotBeAdded()
         {
             var provider = new DefaultGranularityProvider();
-            Granularity newgran = new Granularity("test") { Factor = 7987654 };
+            var newgran = new Granularity("test") { Factor = 7987654 };
             var res1 = provider.RegisterGranularity(newgran);
             var res2 = provider.RegisterGranularity(newgran);
-            Assert.IsTrue(res1);
-            Assert.IsFalse(res2);
+            Assert.True(res1);
+            Assert.False(res2);
         }
 
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentException))]
+        [Fact]
         public void DefaultGranularityProvider_WhenInvalidGranularity_ShouldThrowException()
         {
             var provider = new DefaultGranularityProvider();
-            Granularity newgran = new Granularity("test", 0, 0);
-            provider.RegisterGranularity(newgran);
+            var newgran = new Granularity("test", 0, 0);
+
+            Assert.Throws<ArgumentException>(() => { provider.RegisterGranularity(newgran); });       
         }
-
-
     }
 }

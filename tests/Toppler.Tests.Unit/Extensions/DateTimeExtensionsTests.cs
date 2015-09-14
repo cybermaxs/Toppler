@@ -1,51 +1,50 @@
 ﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Toppler.Extensions;
+using Xunit;
 
 namespace Toppler.Tests.Unit.Extensions
 {
-    [TestClass]
     public class DateTimeExtensionsTests
     {
         public static readonly DateTime Epoch = new DateTime(1970, 1, 1);
 
-        [TestMethod]
+        [Fact]
         public void ToSecondsTimestamp_Epoch_ShoulBeZero()
         {
-            Assert.AreEqual<double>(0, Epoch.ToSecondsTimestamp(), "shoud be zero");
+            Assert.Equal<double>(0, Epoch.ToSecondsTimestamp());
         }
 
-        [TestMethod]
+        [Fact]
         public void ToTimestamp_Epoch_ShoulBeZero()
         {
-            Assert.AreEqual<double>(0, Epoch.ToTimestamp(), "shoud be zero");
+            Assert.Equal<double>(0, Epoch.ToTimestamp());
         }
 
-        [TestMethod]
+        [Fact]
         public void ToSecondsTimestamp_Now_ShoulBeEqual()
         {
-            DateTime now = DateTime.UtcNow;
-            Assert.AreEqual<double>(Math.Floor(now.Subtract(Epoch).TotalSeconds), now.ToSecondsTimestamp(), "shoud be equal");
+            var now = DateTime.UtcNow;
+            Assert.Equal<double>(Math.Floor(now.Subtract(Epoch).TotalSeconds), now.ToSecondsTimestamp());
         }
 
-        [TestMethod]
+        [Fact]
         public void ToTimestamp_Now_ShoulBeEqual()
         {
-            DateTime now = DateTime.UtcNow;
-            Assert.AreEqual<double>(Math.Floor(now.Subtract(Epoch).TotalMilliseconds), now.ToTimestamp(), "shoud be equal");
+            var now = DateTime.UtcNow;
+            Assert.Equal<double>(Math.Floor(now.Subtract(Epoch).TotalMilliseconds), now.ToTimestamp());
         }
 
-        [TestMethod]
+        [Fact]
         public void ToRoundedTimestamp_Now_ShoulBeEqual()
         {
-            DateTime now = DateTime.UtcNow;
+            var now = DateTime.UtcNow;
 
-            Assert.AreEqual<long>(now.ToSecondsTimestamp(), now.ToRoundedTimestamp(1), "seconds");
-            Assert.AreEqual<long>(new DateTime(now.Year, now.Month, now.Day, now.Hour, now.Minute, 0).ToSecondsTimestamp(), now.ToRoundedTimestamp(60), "minutes");
-            Assert.AreEqual<long>(new DateTime(now.Year, now.Month, now.Day, now.Hour, 0, 0).ToSecondsTimestamp(), now.ToRoundedTimestamp(3600), "hours");
-            Assert.AreEqual<long>(new DateTime(now.Year, now.Month, now.Day, 0, 0, 0).ToSecondsTimestamp(), now.ToRoundedTimestamp(86400), "days");
+            Assert.Equal<long>(now.ToSecondsTimestamp(), now.ToRoundedTimestamp(1));
+            Assert.Equal<long>(new DateTime(now.Year, now.Month, now.Day, now.Hour, now.Minute, 0).ToSecondsTimestamp(), now.ToRoundedTimestamp(60));
+            Assert.Equal<long>(new DateTime(now.Year, now.Month, now.Day, now.Hour, 0, 0).ToSecondsTimestamp(), now.ToRoundedTimestamp(3600));
+            Assert.Equal<long>(new DateTime(now.Year, now.Month, now.Day, 0, 0, 0).ToSecondsTimestamp(), now.ToRoundedTimestamp(86400));
 
-            Assert.AreEqual<double>(Math.Floor(now.Subtract(Epoch).TotalMilliseconds), now.ToTimestamp(), "shoud be equal");
+            Assert.Equal<double>(Math.Floor(now.Subtract(Epoch).TotalMilliseconds), now.ToTimestamp());
         }
 
     }

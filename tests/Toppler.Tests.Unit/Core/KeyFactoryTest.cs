@@ -1,37 +1,35 @@
 ﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Toppler.Core;
+using Xunit;
 
 namespace Toppler.Tests.Unit.Core
 {
-    [TestClass]
     public class KeyFactoryTest
     {
-        [TestMethod]
+        [Fact]
         public void KeyFactory_NoNs_ShouldReturnReturnKey()
         {
             var keyFactory = new DefaultKeyFactory(string.Empty);
 
-            Assert.AreEqual(string.Empty, keyFactory.Namespace);
-            Assert.AreEqual("1:2:3", keyFactory.NsKey("1", "2", "3"));
-            Assert.AreEqual("1:2:3", keyFactory.RawKey("1", "2", "3"));
+            Assert.Equal(string.Empty, keyFactory.Namespace);
+            Assert.Equal("1:2:3", keyFactory.NsKey("1", "2", "3"));
+            Assert.Equal("1:2:3", keyFactory.RawKey("1", "2", "3"));
         }
 
-        [TestMethod]
+        [Fact]
         public void KeyFactory_Ns_ShouldReturnReturnKey()
         {
             var keyFactory = new DefaultKeyFactory("ns");
 
-            Assert.AreEqual("ns", keyFactory.Namespace);
-            Assert.AreEqual("ns:1:2:3", keyFactory.NsKey("1", "2", "3"));
-            Assert.AreEqual("1:2:3", keyFactory.RawKey("1", "2", "3"));
+            Assert.Equal("ns", keyFactory.Namespace);
+            Assert.Equal("ns:1:2:3", keyFactory.NsKey("1", "2", "3"));
+            Assert.Equal("1:2:3", keyFactory.RawKey("1", "2", "3"));
         }
 
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentException))]
+        [Fact]
         public void KeyFactory_WhenInvalidNs_ShouldThrowExeption()
         {
-            var keyFactory = new DefaultKeyFactory("ns:dfsdf:sdf");
+            Assert.Throws<ArgumentException>(() => { new DefaultKeyFactory("ns:dfsdf:sdf"); });
         }
     }
 }
