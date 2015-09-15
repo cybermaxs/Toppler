@@ -27,6 +27,8 @@
   </metadata>
   <files>
     <file src="src\Toppler\bin\Release\Toppler.dll" target="lib\net45" />
+    <file src="src\Toppler\bin\Release\Toppler.pdb" target="lib\net45" />
     <file src="src\Toppler_Net40\bin\Release\Toppler.dll" target="lib\net40" />
+    <file src="src\Toppler_Net40\bin\Release\Toppler.pdb" target="lib\net40" />
   </files>
 </package>
