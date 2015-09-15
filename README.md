@@ -1,4 +1,7 @@
-*Work in progress ...*
+[![Build status](https://ci.appveyor.com/api/projects/status/ld2m0ue663fpd10n?svg=true)](https://ci.appveyor.com/project/Cybermaxs/toppler)
+[![Nuget](https://img.shields.io/nuget/dt/toppler.svg)](http://nuget.org/packages/toppler)
+[![Nuget](https://img.shields.io/nuget/v/toppler.svg)](http://nuget.org/packages/toppler)
+[![Coverage Status](https://coveralls.io/repos/Cybermaxs/toppler/badge.svg?branch=master&service=github)](https://coveralls.io/github/Cybermaxs/toppler?branch=master)
 
 # Toppler
 a minimalist library to manage countings, rankings &amp; overall leaderboard
