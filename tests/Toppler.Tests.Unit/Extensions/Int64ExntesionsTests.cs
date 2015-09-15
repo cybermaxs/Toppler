@@ -1,22 +1,21 @@
 ﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Toppler.Extensions;
+using Xunit;
 
 namespace Monitoring.Api.Test.Extensions
 {
-    [TestClass]
     public class Int64EntensionsTests
     {
-        [TestMethod]
+        [Fact]
         public void ToDateTime_Epoch_ShoulBeEqual()
         {
-            Assert.AreEqual<DateTime>(new DateTime(2013, 1, 1, 0, 0, 0), (1356998400L).ToDateTime(), "shoud be equal");
+            Assert.Equal<DateTime>(new DateTime(2013, 1, 1, 0, 0, 0), (1356998400L).ToDateTime());
         }
 
-        [TestMethod]
+        [Fact]
         public void ToRoundedTimestamp_Epoch_ShoulBeEqual()
         {
-            Assert.AreEqual<long>(1356998400L, (1356998450L).ToRoundedTimestamp(60L), "shoud be equal");
+            Assert.Equal<long>(1356998400L, (1356998450L).ToRoundedTimestamp(60L));
         }
     }
 }

@@ -1,134 +1,128 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
+﻿using System;
 using System.Linq;
 using Toppler.Core;
-using Toppler.Extensions;
-using Toppler.Tests.Integration.TestHelpers;
+using Toppler.Tests.Integration.Fixtures;
+using Xunit;
 
 namespace Toppler.Tests.Integration
 {
-    [TestClass]
-    public class SingleEventSourceTest : TestBase
+
+    [Collection("RedisServer")]
+    public class SingleEventSourceTest
     {
-        #region TestInit & CleanUp
-        [TestInitialize]
-        public void TestInit()
+        public SingleEventSourceTest(RedisServerFixture redisServer)
         {
-            this.Reset();
-            this.StartMonitor();
+            redisServer.Reset();
         }
 
-
-        [TestCleanup]
-        public void TestCleanUp()
+        [Theory]
+        [AutoMoqData]
+        [Trait(TestConstants.TestCategoryName, TestConstants.IntegrationTestCategory)]
+        public void SingleEventSource_SingleHit_NoContext(string eventSource)
         {
-            this.StopMonitor();
-        }
-        #endregion
-
-        [TestMethod]
-        [TestCategory("Integration")]
-        public void SingleEventSource_SingleHit_NoContext()
-        {
-            Top.Counter.HitAsync(new string[] { this.TestEventSource });
+            Top.Counter.HitAsync(new string[] { eventSource });
 
             var overall = Top.Ranking.AllAsync(Granularity.Day).Result;
             var dimensioned = Top.Ranking.AllAsync(Granularity.Day, dimension: Constants.DefaultDimension).Result;
 
-            Assert.IsNotNull(overall);
-            Assert.IsNotNull(dimensioned);
+            Assert.NotNull(overall);
+            Assert.NotNull(dimensioned);
 
             //overall
-            Assert.AreEqual(1, overall.Count());
-            Assert.AreEqual(this.TestEventSource, overall.First().EventSource);
-            Assert.AreEqual(1D, overall.First().Score);
+            Assert.Equal(1, overall.Count());
+            Assert.Equal(eventSource, overall.First().EventSource);
+            Assert.Equal(1D, overall.First().Score);
 
             //dimensioned
-            Assert.AreEqual(1, dimensioned.Count());
-            Assert.AreEqual(this.TestEventSource, dimensioned.First().EventSource);
-            Assert.AreEqual(1D, dimensioned.First().Score);
+            Assert.Equal(1, dimensioned.Count());
+            Assert.Equal(eventSource, dimensioned.First().EventSource);
+            Assert.Equal(1D, dimensioned.First().Score);
         }
 
-        [TestMethod]
-        [TestCategory("Integration")]
-        public void SingleEventSource_SingleHit_RandomContext()
+        [Theory]
+        [Trait(TestConstants.TestCategoryName, TestConstants.IntegrationTestCategory)]
+        [AutoMoqData]
+        public void SingleEventSource_SingleHit_RandomContext(string eventSource, string dimension)
         {
-            Top.Counter.HitAsync(new string[] { this.TestEventSource}, dimensions: new string[] { this.TestDimension});
+            Top.Counter.HitAsync(new string[] { eventSource }, dimensions: new string[] { dimension });
 
             var overall = Top.Ranking.AllAsync(Granularity.Day).Result;
-            var dimensioned = Top.Ranking.AllAsync(Granularity.Day, dimension: this.TestDimension).Result;
+            var dimensioned = Top.Ranking.AllAsync(Granularity.Day, dimension: dimension).Result;
 
-            Assert.IsNotNull(overall);
-            Assert.IsNotNull(dimensioned);
+            Assert.NotNull(overall);
+            Assert.NotNull(dimensioned);
 
             //overall
-            Assert.AreEqual(1, overall.Count());
-            Assert.AreEqual(this.TestEventSource, overall.First().EventSource);
-            Assert.AreEqual(1D, overall.First().Score);
+            Assert.Equal(1, overall.Count());
+            Assert.Equal(eventSource, overall.First().EventSource);
+            Assert.Equal(1D, overall.First().Score);
 
             //dimensioned
-            Assert.AreEqual(1, dimensioned.Count());
-            Assert.AreEqual(this.TestEventSource, dimensioned.First().EventSource);
-            Assert.AreEqual(1D, dimensioned.First().Score);
+            Assert.Equal(1, dimensioned.Count());
+            Assert.Equal(eventSource, dimensioned.First().EventSource);
+            Assert.Equal(1D, dimensioned.First().Score);
         }
 
-        [TestMethod]
-        [TestCategory("Integration")]
-        public void SingleEventSource_MultiplesHits_NoContext()
+        [Theory]
+        [Trait(TestConstants.TestCategoryName, TestConstants.IntegrationTestCategory)]
+        [AutoMoqData]
+        public void SingleEventSource_MultiplesHits_NoContext(string eventSource)
         {
             var now = DateTime.UtcNow.AddMinutes(-60);
             foreach (var item in Enumerable.Range(1, 60))
             {
-                Top.Counter.HitAsync(new string [] { this.TestEventSource}, 1L, new string[] { Constants.DefaultDimension}, now.AddMinutes(item));
+                Top.Counter.HitAsync(new string [] { eventSource }, 1L, new string[] { Constants.DefaultDimension}, now.AddMinutes(item));
             }
 
             var overall = Top.Ranking.AllAsync(Granularity.Day, 60).Result;
             var dimensioned = Top.Ranking.AllAsync(Granularity.Day, 60, dimension: Constants.DefaultDimension).Result;
 
-            Assert.IsNotNull(overall);
-            Assert.IsNotNull(dimensioned);
+            Assert.NotNull(overall);
+            Assert.NotNull(dimensioned);
 
             //overall
-            Assert.AreEqual(1, overall.Count());
-            Assert.AreEqual(this.TestEventSource, overall.First().EventSource);
-            Assert.AreEqual(60D, overall.First().Score);
+            Assert.Equal(1, overall.Count());
+            Assert.Equal(eventSource, overall.First().EventSource);
+            Assert.Equal(60D, overall.First().Score);
 
             //dimensioned
-            Assert.AreEqual(1, dimensioned.Count());
-            Assert.AreEqual(this.TestEventSource, dimensioned.First().EventSource);
-            Assert.AreEqual(60D, dimensioned.First().Score);
+            Assert.Equal(1, dimensioned.Count());
+            Assert.Equal(eventSource, dimensioned.First().EventSource);
+            Assert.Equal(60D, dimensioned.First().Score);
         }
 
-        [TestMethod]
-        [TestCategory("Integration")]
-        public void SingleEventSource_MultiplesHits_RandomContext()
+        [Theory]
+        [Trait(TestConstants.TestCategoryName, TestConstants.IntegrationTestCategory)]
+        [AutoMoqData]
+        public void SingleEventSource_MultiplesHits_RandomContext(string eventSource, string dimension)
         {
             var now = DateTime.UtcNow.AddMinutes(-60);
             foreach (var item in Enumerable.Range(1, 60))
             {
-                Top.Counter.HitAsync(new string[] { this.TestEventSource}, 1L, new string[] { this.TestDimension }, now.AddMinutes(item));
+                Top.Counter.HitAsync(new string[] { eventSource }, 1L, new string[] { dimension }, now.AddMinutes(item));
             }
 
             var overall = Top.Ranking.AllAsync(Granularity.Day, 60).Result;
-            var dimensioned = Top.Ranking.AllAsync(Granularity.Day, 60, dimension: this.TestDimension).Result;
+            var dimensioned = Top.Ranking.AllAsync(Granularity.Day, 60, dimension: dimension).Result;
 
-            Assert.IsNotNull(overall);
-            Assert.IsNotNull(dimensioned);
+            Assert.NotNull(overall);
+            Assert.NotNull(dimensioned);
 
             //overall
-            Assert.AreEqual(1, overall.Count());
-            Assert.AreEqual(this.TestEventSource, overall.First().EventSource);
-            Assert.AreEqual(60D, overall.First().Score);
+            Assert.Equal(1, overall.Count());
+            Assert.Equal(eventSource, overall.First().EventSource);
+            Assert.Equal(60D, overall.First().Score);
 
             //dimensioned
-            Assert.AreEqual(1, dimensioned.Count());
-            Assert.AreEqual(this.TestEventSource, dimensioned.First().EventSource);
-            Assert.AreEqual(60D, dimensioned.First().Score);
+            Assert.Equal(1, dimensioned.Count());
+            Assert.Equal(eventSource, dimensioned.First().EventSource);
+            Assert.Equal(60D, dimensioned.First().Score);
         }
 
-        [TestMethod]
-        [TestCategory("Integration")]
-        public void SingleEventSource_MultiplesHits_MultiContext()
+        [Theory]
+        [Trait(TestConstants.TestCategoryName, TestConstants.IntegrationTestCategory)]
+        [AutoMoqData]
+        public void SingleEventSource_MultiplesHits_MultiContext(string eventSource, string dimension)
         {
             var now = DateTime.UtcNow.Date;
 
@@ -136,37 +130,37 @@ namespace Toppler.Tests.Integration
 
             foreach (var i in Enumerable.Range(1, 3600))
             {
-                Top.Counter.HitAsync(new string[] {this.TestEventSource}, 1L, new string[] { this.TestDimension + "-v1"}, current);
-                Top.Counter.HitAsync(new string[] {this.TestEventSource}, 1L, new string[] { this.TestDimension + "-v2"}, current);
-                Top.Counter.HitAsync(new string[] {this.TestEventSource}, 1L, new string[] { this.TestDimension + "-v3"}, current);
+                Top.Counter.HitAsync(new string[] { eventSource }, 1L, new string[] { dimension + "-v1"}, current);
+                Top.Counter.HitAsync(new string[] { eventSource }, 1L, new string[] { dimension + "-v2"}, current);
+                Top.Counter.HitAsync(new string[] { eventSource }, 1L, new string[] { dimension + "-v3"}, current);
                 current = current.AddSeconds(1);
             }
 
 
             //all contexts
             var alltops = Top.Ranking.AllAsync(Granularity.Day, 1, current).Result;
-            Assert.AreEqual(this.TestEventSource, alltops.First().EventSource);
-            Assert.AreEqual(1, alltops.Count());
+            Assert.Equal(eventSource, alltops.First().EventSource);
+            Assert.Equal(1, alltops.Count());
             foreach (var r in alltops)
-                Assert.AreEqual(3600 * 3, r.Score);
+                Assert.Equal(3600 * 3, r.Score);
 
             //v1
-            var topsv1 = Top.Ranking.AllAsync(Granularity.Day, 1, current, this.TestDimension + "-v1").Result;
-            Assert.AreEqual(this.TestEventSource, topsv1.First().EventSource);
-            Assert.AreEqual(1, topsv1.Count());
-            Assert.AreEqual(3600, topsv1.First().Score);
+            var topsv1 = Top.Ranking.AllAsync(Granularity.Day, 1, current, dimension + "-v1").Result;
+            Assert.Equal(eventSource, topsv1.First().EventSource);
+            Assert.Equal(1, topsv1.Count());
+            Assert.Equal(3600, topsv1.First().Score);
 
             //v2
-            var topsv2 = Top.Ranking.AllAsync(Granularity.Day, 1, current, this.TestDimension + "-v2").Result;
-            Assert.AreEqual(this.TestEventSource, topsv2.First().EventSource);
-            Assert.AreEqual(1, topsv2.Count());
-            Assert.AreEqual(3600, topsv2.First().Score);
+            var topsv2 = Top.Ranking.AllAsync(Granularity.Day, 1, current, dimension + "-v2").Result;
+            Assert.Equal(eventSource, topsv2.First().EventSource);
+            Assert.Equal(1, topsv2.Count());
+            Assert.Equal(3600, topsv2.First().Score);
 
             //v3
-            var topsv3 = Top.Ranking.AllAsync(Granularity.Day, 1, current, this.TestDimension + "-v3").Result;
-            Assert.AreEqual(this.TestEventSource, topsv3.First().EventSource);
-            Assert.AreEqual(1, topsv3.Count());
-            Assert.AreEqual(3600, topsv3.First().Score);
+            var topsv3 = Top.Ranking.AllAsync(Granularity.Day, 1, current, dimension + "-v3").Result;
+            Assert.Equal(eventSource, topsv3.First().EventSource);
+            Assert.Equal(1, topsv3.Count());
+            Assert.Equal(3600, topsv3.First().Score);
 
         }
     }
