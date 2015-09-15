@@ -1,36 +1,23 @@
 ﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Linq;
 using Toppler.Core;
-using System.Diagnostics;
-using System.Threading.Tasks;
-using Toppler.Tests.Integration.TestHelpers;
-using Toppler.Extensions;
+using Toppler.Tests.Integration.Fixtures;
+using Xunit;
 
 namespace Toppler.Tests.Integration
 {
-    [TestClass]
-    public class CacheTest : TestBase
+    [Collection("RedisServer")]
+    public class CacheTest
     {
-        #region TestInit & CleanUp
-        [TestInitialize]
-        public void TestInit()
+        public CacheTest(RedisServerFixture redisServer)
         {
-            this.Reset();
-            this.StartMonitor();
+            redisServer.Reset();
         }
 
-
-        [TestCleanup]
-        public void TestCleanUp()
-        {
-            this.StopMonitor();
-        }
-        #endregion
-
-        [TestMethod]
-        [TestCategory("Integration")]
-        public void BasicCache()
+        [Theory]
+        [Trait(TestConstants.TestCategoryName, TestConstants.IntegrationTestCategory)]
+        [AutoMoqData]
+        public void BasicCache(string eventSource, string dimension)
         {
             var now = DateTime.UtcNow;
 
@@ -38,16 +25,14 @@ namespace Toppler.Tests.Integration
 
             foreach (var i in Enumerable.Range(1, 10))
             {
-                Top.Counter.HitAsync(new string[] {this.TestEventSource},1L, new string[] {this.TestDimension},  current);
+                Top.Counter.HitAsync(new string[] { eventSource },1L, new string[] { dimension },  current);
                 current = current.AddHours(-i);
             }
 
-            var res1 = Top.Ranking.AllAsync(Granularity.Hour, 5, dimension: this.TestDimension).Result;
-           Assert.IsNotNull(res1);
-           var res2 = Top.Ranking.AllAsync(Granularity.Hour, 5, dimension: this.TestDimension).Result;
-           var res3 = Top.Ranking.AllAsync(Granularity.Hour, 5, dimension: this.TestDimension).Result;
-
-
+            var res1 = Top.Ranking.AllAsync(Granularity.Hour, 5, dimension: dimension).Result;
+           Assert.NotNull(res1);
+           var res2 = Top.Ranking.AllAsync(Granularity.Hour, 5, dimension: dimension).Result;
+           var res3 = Top.Ranking.AllAsync(Granularity.Hour, 5, dimension: dimension).Result;
         }
     }
 }

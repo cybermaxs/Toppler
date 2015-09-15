@@ -1,78 +1,60 @@
 ﻿using System;
 using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Toppler.Tests.Integration.TestHelpers;
 using Toppler.Core;
+using Toppler.Tests.Integration.Fixtures;
+using Xunit;
 
 namespace Toppler.Tests.Integration
 {
-    [TestClass]
-    public class RankTest : TestBase
+    [Collection("RedisServer")]
+    public class RankTest
     {
-        private string[] TestEventSources = null;
-
-        #region TestInit & CleanUp
-        [TestInitialize]
-        public void TestInit()
+        public RankTest(RedisServerFixture redisServer)
         {
-            this.Reset();
-            this.StartMonitor();
-
-            // add 3 event sources 
-            TestEventSources = new string[] {
-                RandomEventSource(),
-                RandomEventSource(),
-                RandomEventSource()
-            };
+            redisServer.Reset();
         }
 
-
-        [TestCleanup]
-        public void TestCleanUp()
+        [Theory]
+        [Trait(TestConstants.TestCategoryName, TestConstants.IntegrationTestCategory)]
+        [AutoMoqData]
+        public void RankTest_nMultipleHit_WheShouldBeCorrect(string[] eventSources)
         {
-            this.StopMonitor();
-        }
-        #endregion
-
-        [TestMethod]
-        [TestCategory("Integration")]
-        public void RankTest_nMultipleHit_WheShouldBeCorrect()
-        {
-            for (int i = 0; i < this.TestEventSources.Length; i++)
+            for (int i = 0; i < eventSources.Length; i++)
             {
-                Top.Counter.HitAsync(this.TestEventSources[i], 10 - i);
+                Top.Counter.HitAsync(eventSources[i], 10 - i);
             }
 
             var overall = Top.Ranking.AllAsync(Granularity.Day).Result;
             var dimensioned = Top.Ranking.AllAsync(Granularity.Day, dimension: Constants.DefaultDimension).Result;
 
-            Assert.IsNotNull(overall);
-            Assert.IsNotNull(dimensioned);
+            Assert.NotNull(overall);
+            Assert.NotNull(dimensioned);
 
             //overall
-            Assert.AreEqual(3, overall.Count());
-            for (int i = 0; i < this.TestEventSources.Length; i++)
+            Assert.Equal(3, overall.Count());
+            for (int i = 0; i < eventSources.Length; i++)
             {
-                var source = overall.SingleOrDefault(r => r.EventSource == this.TestEventSources[i]);
-                Assert.IsNotNull(source);
-                Assert.AreEqual(10 - i, source.Score);
-                Assert.AreEqual(i + 1, source.Rank);
+                var source = overall.SingleOrDefault(r => r.EventSource == eventSources[i]);
+                Assert.NotNull(source);
+                Assert.Equal(10 - i, source.Score);
+                Assert.Equal(i + 1, source.Rank);
             }
 
             //dimensioned
-            Assert.AreEqual(3, dimensioned.Count());
-            for (int i = 0; i < this.TestEventSources.Length; i++)
+            Assert.Equal(3, dimensioned.Count());
+            for (int i = 0; i < eventSources.Length; i++)
             {
-                var source = dimensioned.SingleOrDefault(r => r.EventSource == this.TestEventSources[i]);
-                Assert.IsNotNull(source);
-                Assert.AreEqual(10 - i, source.Score);
-                Assert.AreEqual(i + 1, source.Rank);
+                var source = dimensioned.SingleOrDefault(r => r.EventSource == eventSources[i]);
+                Assert.NotNull(source);
+                Assert.Equal(10 - i, source.Score);
+                Assert.Equal(i + 1, source.Rank);
             }
         }
 
-        [TestMethod]
-        [TestCategory("Integration")]
-        public void DetailsTest_MultipleHit_WhenShouldBeCorrect()
+        [Theory]
+        [Trait(TestConstants.TestCategoryName, TestConstants.IntegrationTestCategory)]
+        [AutoMoqData]
+        public void DetailsTest_MultipleHit_WhenShouldBeCorrect(string[] eventSources, string dimension)
         {
             var now = DateTime.UtcNow.Date;
 
@@ -80,22 +62,22 @@ namespace Toppler.Tests.Integration
 
             foreach (var i in Enumerable.Range(1, 3600))
             {
-                for (int j = 0; j < this.TestEventSources.Length; j++)
+                for (int j = 0; j < eventSources.Length; j++)
                 {
-                    Top.Counter.HitAsync(new string[] { this.TestEventSources[j] }, this.TestEventSources.Length-j, new string[] { this.TestDimension }, current);
+                    Top.Counter.HitAsync(new string[] { eventSources[j] }, eventSources.Length-j, new string[] { dimension }, current);
                 }
 
                 current = current.AddSeconds(1);
             }
 
             //check
-            for (int i = 0; i < this.TestEventSources.Length; i++)
+            for (int i = 0; i < eventSources.Length; i++)
             {
-                var details = Top.Ranking.DetailsAsync(this.TestEventSources[i], Granularity.Hour, 1, current, new string[] { this.TestDimension }).Result;
-                Assert.IsNotNull(details);
-                Assert.AreEqual(this.TestEventSources[i], details.EventSource);
-                Assert.AreEqual((this.TestEventSources.Length - i) * 3600, details.Score);
-                Assert.AreEqual(i + 1, details.Rank);
+                var details = Top.Ranking.DetailsAsync(eventSources[i], Granularity.Hour, 1, current, new string[] { dimension }).Result;
+                Assert.NotNull(details);
+                Assert.Equal(eventSources[i], details.EventSource);
+                Assert.Equal((eventSources.Length - i) * 3600, details.Score);
+                Assert.Equal(i + 1, details.Rank);
             }
 
         }
